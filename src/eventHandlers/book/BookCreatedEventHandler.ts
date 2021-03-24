@@ -17,10 +17,10 @@ export class BookCreatedEventHandler implements IEventHandler<BookEvent> {
 
   async handle() {
     this.eventBus.on(BookCreated.name, async (event) => {
-      event.authorFullName = await this.readModel.getAuthorById(event.authorId);
+      event.author = await this.readModel.getAuthorById(event.authorId);
       this.redisClient.set(`books:${event.guid}`, JSON.stringify({
         name: event.name,
-        author: event.authorFullName,
+        author: event.author,
         price: event.price,
         version: event.version,
       }));

@@ -45,8 +45,8 @@ export class BookController {
 
   @httpPut('/:guid/author')
   async updateAuthor(@request() req: Request, @response() res: Response) {
-    const { author, version } = req.body;
-    const command = new UpdateBookAuthorCommand(req.params.guid, author, version);
+    const { authorId, version } = req.body;
+    const command = new UpdateBookAuthorCommand(req.params.guid, authorId, version);
     await this.commandBus.send(command);
     return res.json(ok('Successfully updated the book', undefined));
   }

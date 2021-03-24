@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AggregateRoot } from '@core/AggregateRoot';
 import { BookCreated } from './events/BookCreated';
 import { BookAuthorChanged } from './events/BookAuthorChanged';
@@ -33,11 +34,5 @@ export class Book extends AggregateRoot {
 
   public applyBookAuthorChanged(event: BookAuthorChanged): void {
     this.authorId = event.authorId;
-  }
-
-  public applyBookUpdated(event: any): void {
-    this.name = event.name;
-    this.author = event.author;
-    this.price = event.price;
   }
 }

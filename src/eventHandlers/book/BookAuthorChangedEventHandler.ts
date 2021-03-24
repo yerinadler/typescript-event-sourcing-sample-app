@@ -5,12 +5,14 @@ import { inject, injectable } from 'inversify';
 import Event from 'events';
 import { BookAuthorChanged } from '@domain/book/events/BookAuthorChanged';
 import Redis from 'ioredis';
+import { IBookReadModelFacade } from '@domain/book/ReadModel';
 
 @injectable()
 export class BookAuthorChangedEventHandler implements IEventHandler<BookEvent> {
   constructor(
     @inject(TYPES.EventBus) private readonly eventBus: Event.EventEmitter,
     @inject(TYPES.Redis) private readonly redisClient: Redis.Redis,
+    @inject(TYPES.BookReadModelFacade) private readModel: IBookReadModelFacade
   ) {}
 
   async handle() {
@@ -18,6 +20,7 @@ export class BookAuthorChangedEventHandler implements IEventHandler<BookEvent> {
       const cachedBook = await this.redisClient.get(`books:${event.guid}`);
       if (cachedBook) {
         const book = JSON.parse(cachedBook);
+        event.author = await this.readModel.getAuthorById(event.authorId);
         await this.redisClient.set(`books:${event.guid}`, JSON.stringify({
           ...book,
           author: event.author,
