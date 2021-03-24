@@ -1,5 +1,4 @@
-import { BookAuthorChanged } from "./BookAuthorChanged";
-import { BookCreated } from "./BookCreated";
-import { BookUpdated } from "./BookUpdated";
+import { BookAuthorChanged } from './BookAuthorChanged';
+import { BookCreated } from './BookCreated';
 
-export type BookEvent = BookCreated | BookAuthorChanged | BookUpdated;
+export type BookEvent = BookCreated | BookAuthorChanged;

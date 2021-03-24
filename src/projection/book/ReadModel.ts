@@ -1,7 +1,8 @@
-import { TYPES } from "@constants/types";
-import { NotFoundException } from "@core/ApplicationError";
-import { inject, injectable } from "inversify";
-import Redis from "ioredis";
+import { TYPES } from '@constants/types';
+import { NotFoundException } from '@core/ApplicationError';
+import { IReadModelFacade } from '@core/IReadModelFacade';
+import { inject, injectable } from 'inversify';
+import Redis from 'ioredis';
 
 export class BookListDTO {
   constructor(
@@ -12,19 +13,16 @@ export class BookListDTO {
   ) {}
 }
 
-export interface IReadModelFacade {
-  getAllBooks(): Promise<BookListDTO[]>;
-  getBookById(guid: string): Promise<BookListDTO>;
-}
+export interface IBookReadModelFacade extends IReadModelFacade<any> {}
 
 @injectable()
-export class ReadModelFacade implements IReadModelFacade {
+export class BookReadModelFacade implements IBookReadModelFacade {
 
   constructor(
     @inject(TYPES.Redis) private readonly redisClient: Redis.Redis,
   ) {}
 
-  async getAllBooks() {
+  async getAll() {
     const books = [];
     const keys = await this.redisClient.keys('books:*');
     
@@ -38,11 +36,19 @@ export class ReadModelFacade implements IReadModelFacade {
     return books;
   }
 
-  async getBookById(guid: string) {
+  async getById(guid: string) {
     const book = await this.redisClient.get(`books:${guid}`);
     if (!book) {
       throw new NotFoundException('The requested book does not exist');
     }
     return JSON.parse(book);
+  }
+
+  async getAuthorById(authorId: string) {
+    const author = await this.redisClient.get(`authors:${authorId}`);
+    if (!author) {
+      throw new NotFoundException('The requested author does not exist');
+    }
+    return JSON.parse(author);
   }
 }

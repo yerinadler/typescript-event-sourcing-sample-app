@@ -1,4 +1,4 @@
-import { ICommandHandler } from "./ICommandHandler";
+import { ICommandHandler } from './ICommandHandler';
 
 export interface ICommandBus {
   registerHandler<TCommand>(commandName: string, handler: ICommandHandler<TCommand>): void;

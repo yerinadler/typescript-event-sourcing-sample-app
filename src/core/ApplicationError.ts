@@ -1,4 +1,4 @@
-import { CONFLICT, NOT_FOUND } from "http-status-codes";
+import { CONFLICT, NOT_FOUND } from 'http-status-codes';
 
 export class ApplicationError extends Error {
   public readonly httpCode: number;

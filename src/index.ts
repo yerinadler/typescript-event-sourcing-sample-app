@@ -5,7 +5,6 @@ dotenv.config();
 import 'reflect-metadata';
 import { initialise } from './entrypoint';
 import { TYPES } from '@constants/types';
-import { IEvent } from '@core/IEvent';
 import { EventHandler } from '@infrastructure/eventHandler';
 
 (async () => {

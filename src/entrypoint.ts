@@ -27,11 +27,15 @@ import { BookEvent } from '@domain/book/events';
 import { EventHandler } from '@infrastructure/eventHandler';
 import RedisClient from '@infrastructure/redis';
 import { BookAuthorChangedEventHandler } from '@eventHandlers/book/BookAuthorChangedEventHandler';
-import { UpdateBookCommand } from '@commands/book/UpdateBook';
-import { UpdateBookCommandHandler } from '@commandHandlers/book/UpdateBookCommandHandler';
-import { BookUpdatedEventHandler } from '@eventHandlers/book/BookUpdatedEventHandler';
+import { CreateUserCommand } from '@commands/user/CreateUser';
 import { FakeNotificationEventHandler } from '@eventHandlers/book/FakeNotificationEventHandler';
-import { IReadModelFacade, ReadModelFacade } from '@domain/book/ReadModel';
+import { BookReadModelFacade, IBookReadModelFacade } from '@projection/book/ReadModel';
+import { User } from '@domain/user/User';
+import { CreateUserCommandHandler } from '@commandHandlers/user/CreateUserCommandHandler';
+import { UserEvent } from '@domain/user/events';
+import { UserCreatedEventHandler } from '@eventHandlers/user/UserCreatedEventHandler';
+import { AuthorCreatedEventHandler } from '@eventHandlers/author/AuthorCreatedEventHandler';
+import { AuthorReadModelFacade, IAuthorReadModelFacade } from '@projection/author/ReadModel';
 
 const initialise = async () => {
   const container = new Container();
@@ -39,24 +43,27 @@ const initialise = async () => {
   // Module Registration
   const db: Db = await createMongodbConnection(config.MONGODB_URI);
   const eventbus: Events.EventEmitter = getEventBus();
-  const eventStore: IEventStore = new EventStore(db, eventbus);
+  const bookEventStore: IEventStore = new EventStore(db.collection('book-events'), eventbus);
+  const userEventStore: IEventStore = new EventStore(db.collection('user-events'), eventbus);
 
   // Register command handlers to the bus
   const commandBus = new CommandBus();
-  commandBus.registerHandler(CreateBookCommand.name, new CreateBookCommandHandler(new Repository<Book>(eventStore, Book)));
-  commandBus.registerHandler(UpdateBookAuthorCommand.name, new UpdateBookAuthorCommandHandler(new Repository<Book>(eventStore, Book)));
-  commandBus.registerHandler(UpdateBookCommand.name, new UpdateBookCommandHandler(new Repository<Book>(eventStore, Book)));
+  commandBus.registerHandler(CreateBookCommand.name, new CreateBookCommandHandler(new Repository<Book>(bookEventStore, Book)));
+  commandBus.registerHandler(UpdateBookAuthorCommand.name, new UpdateBookAuthorCommandHandler(new Repository<Book>(bookEventStore, Book)));
+  commandBus.registerHandler(CreateUserCommand.name, new CreateUserCommandHandler(new Repository<User>(userEventStore, User)));
 
   container.bind<Db>(TYPES.Db).toConstantValue(db);
   container.bind<Redis.Redis>(TYPES.Redis).toConstantValue(RedisClient);
   container.bind<CommandBus>(TYPES.CommandBus).toConstantValue(commandBus);
   container.bind<Events.EventEmitter>(TYPES.EventBus).toConstantValue(eventbus);
-  container.bind<IReadModelFacade>(TYPES.ReadModelFacade).to(ReadModelFacade);
+  container.bind<IBookReadModelFacade>(TYPES.BookReadModelFacade).to(BookReadModelFacade);
+  container.bind<IAuthorReadModelFacade>(TYPES.AuthorReadModelFacade).to(AuthorReadModelFacade);
   container.bind<EventHandler>(TYPES.EventHandler).to(EventHandler);
   container.bind<IEventHandler<BookEvent>>(TYPES.Event).to(BookCreatedEventHandler);
   container.bind<IEventHandler<BookEvent>>(TYPES.Event).to(FakeNotificationEventHandler);
   container.bind<IEventHandler<BookEvent>>(TYPES.Event).to(BookAuthorChangedEventHandler);
-  container.bind<IEventHandler<BookEvent>>(TYPES.Event).to(BookUpdatedEventHandler);
+  container.bind<IEventHandler<UserEvent>>(TYPES.Event).to(UserCreatedEventHandler);
+  container.bind<IEventHandler<UserEvent>>(TYPES.Event).to(AuthorCreatedEventHandler);
   // ======================================================
   
 

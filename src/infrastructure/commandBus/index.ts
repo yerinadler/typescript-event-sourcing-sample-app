@@ -1,6 +1,6 @@
-import { ICommand } from "@core/ICommand";
-import { ICommandHandler } from "@core/ICommandHandler";
-import { injectable } from "inversify";
+import { ICommand } from '@core/ICommand';
+import { ICommandHandler } from '@core/ICommandHandler';
+import { injectable } from 'inversify';
 
 @injectable()
 export class CommandBus {
