@@ -4,8 +4,6 @@ import { IEvent } from '@core/IEvent';
 import { IEventStore } from '@core/IEventStore';
 import { Collection } from 'mongodb';
 import Event from 'events';
-
-// TODO: Find the way to properly manage the persistence of the event payload
 export class EventStore implements IEventStore {
 
   constructor(

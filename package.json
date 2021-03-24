@@ -13,6 +13,7 @@
     "@commandHandlers": "dist/commandHandlers",
     "@eventHandlers": "dist/eventHandlers",
     "@commands": "dist/commands",
+    "@projection": "dist/projection",
     "@config": "dist/config",
     "@constants": "dist/constants",
     "@domain": "dist/domain",

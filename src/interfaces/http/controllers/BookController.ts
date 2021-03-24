@@ -13,7 +13,7 @@ import { ok } from '../processors/response';
 import { CommandBus } from '@infrastructure/commandBus';
 import { CreateBookCommand } from '@commands/book/CreateBook';
 import { UpdateBookAuthorCommand } from '@commands/book/UpdateBookAuthor';
-import { IBookReadModelFacade } from '@domain/book/ReadModel';
+import { IBookReadModelFacade } from '../../../projection/book/ReadModel';
 
 @controller('/api/v1/books')
 export class BookController {

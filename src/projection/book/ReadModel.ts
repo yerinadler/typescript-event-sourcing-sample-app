@@ -4,32 +4,16 @@ import { IReadModelFacade } from '@core/IReadModelFacade';
 import { inject, injectable } from 'inversify';
 import Redis from 'ioredis';
 
-export abstract class BookDTO {}
-
-export class BookListDTO extends BookDTO {
+export class BookListDTO {
   constructor(
     public readonly name: string,
     public readonly author: string,
     public readonly price: number,
     public readonly version: number,
-  ) {
-    super();
-  }
+  ) {}
 }
 
-export class AuthorDTO extends BookDTO {
-  constructor(
-    public readonly guid: string,
-    public readonly firstname: string,
-    public readonly lastname: string
-  ) {
-    super();
-  }
-}
-
-export interface IBookReadModelFacade extends IReadModelFacade<BookDTO> {
-  getAuthorById(authorId: string): Promise<AuthorDTO>;
-}
+export interface IBookReadModelFacade extends IReadModelFacade<any> {}
 
 @injectable()
 export class BookReadModelFacade implements IBookReadModelFacade {

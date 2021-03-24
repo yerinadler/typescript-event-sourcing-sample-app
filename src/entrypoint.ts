@@ -29,12 +29,13 @@ import RedisClient from '@infrastructure/redis';
 import { BookAuthorChangedEventHandler } from '@eventHandlers/book/BookAuthorChangedEventHandler';
 import { CreateUserCommand } from '@commands/user/CreateUser';
 import { FakeNotificationEventHandler } from '@eventHandlers/book/FakeNotificationEventHandler';
-import { BookReadModelFacade, IBookReadModelFacade } from '@domain/book/ReadModel';
+import { BookReadModelFacade, IBookReadModelFacade } from '@projection/book/ReadModel';
 import { User } from '@domain/user/User';
 import { CreateUserCommandHandler } from '@commandHandlers/user/CreateUserCommandHandler';
 import { UserEvent } from '@domain/user/events';
 import { UserCreatedEventHandler } from '@eventHandlers/user/UserCreatedEventHandler';
-import { AuthorCreatedEventHandler } from '@eventHandlers/book/AuthorCreatedEventHandler';
+import { AuthorCreatedEventHandler } from '@eventHandlers/author/AuthorCreatedEventHandler';
+import { AuthorReadModelFacade, IAuthorReadModelFacade } from '@projection/author/ReadModel';
 
 const initialise = async () => {
   const container = new Container();
@@ -56,6 +57,7 @@ const initialise = async () => {
   container.bind<CommandBus>(TYPES.CommandBus).toConstantValue(commandBus);
   container.bind<Events.EventEmitter>(TYPES.EventBus).toConstantValue(eventbus);
   container.bind<IBookReadModelFacade>(TYPES.BookReadModelFacade).to(BookReadModelFacade);
+  container.bind<IAuthorReadModelFacade>(TYPES.AuthorReadModelFacade).to(AuthorReadModelFacade);
   container.bind<EventHandler>(TYPES.EventHandler).to(EventHandler);
   container.bind<IEventHandler<BookEvent>>(TYPES.Event).to(BookCreatedEventHandler);
   container.bind<IEventHandler<BookEvent>>(TYPES.Event).to(FakeNotificationEventHandler);
