@@ -1,9 +1,9 @@
-import { TYPES } from "@constants/types";
-import { IEventHandler } from "@core/IEventHandler";
-import { BookEvent } from "@domain/book/events";
-import { inject, injectable } from "inversify";
-import Event from "events";
-import { BookAuthorChanged } from "@domain/book/events/BookAuthorChanged";
+import { TYPES } from '@constants/types';
+import { IEventHandler } from '@core/IEventHandler';
+import { BookEvent } from '@domain/book/events';
+import { inject, injectable } from 'inversify';
+import Event from 'events';
+import { BookAuthorChanged } from '@domain/book/events/BookAuthorChanged';
 import Redis from 'ioredis';
 
 @injectable()

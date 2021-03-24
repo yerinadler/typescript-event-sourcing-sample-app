@@ -1,22 +1,17 @@
-import { TYPES } from "@constants/types";
-import { ConcurrencyException, NotFoundException } from "@core/ApplicationError";
-import { EventDescriptor } from "@core/EventDescriptor";
-import { IEvent } from "@core/IEvent";
-import { IEventStore } from "@core/IEventStore";
-import { Collection, Db } from "mongodb";
+import { ConcurrencyException, NotFoundException } from '@core/ApplicationError';
+import { EventDescriptor } from '@core/EventDescriptor';
+import { IEvent } from '@core/IEvent';
+import { IEventStore } from '@core/IEventStore';
+import { Collection } from 'mongodb';
 import Event from 'events';
 
 // TODO: Find the way to properly manage the persistence of the event payload
 export class EventStore implements IEventStore {
 
-  private readonly eventCollection: Collection;
-
   constructor(
-    private readonly dbClient: Db,
+    private readonly eventCollection: Collection,
     private readonly eventBus: Event.EventEmitter,
-  ) {
-    this.eventCollection = this.dbClient.collection('events');
-  }
+  ) {}
 
   async saveEvents(aggregateGuid: string, events: IEvent[], expectedVersion: number) {
     const operations: any[] = [];
@@ -34,6 +29,7 @@ export class EventStore implements IEventStore {
       i++;
       event.version = i;
       const eventObject = new EventDescriptor(aggregateGuid, { eventType: event.constructor.name, ...event }, i);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.eventBus.emit(eventObject.eventPayload.eventType!, event);
       operations.push({ insertOne: eventObject });
     }

@@ -1,4 +1,4 @@
-import { AggregateRoot } from "./AggregateRoot";
+import { AggregateRoot } from './AggregateRoot';
 
 export interface IRepository<T> {
   save(aggregateRoot: T, expectedVersion: number): void;
