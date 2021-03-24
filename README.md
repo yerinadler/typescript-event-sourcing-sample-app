@@ -1,4 +1,7 @@
 # TypeScript DDD API Boilerplate
+
+**Note:** This project is a experimential project that leverages the concepts of `CQRS` and `Event Sourcing`. However, the events as written in this project are the results of the `Strategic Design` and this project can be used during the `Tactical Design` phase
+
 Seed project (boilerplate) for RESTful API that leverages the concept of Domain Driven Design (DDD) with CQRS and Event Sourcing
 
 ### Foreword from the author
