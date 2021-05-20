@@ -1,11 +1,17 @@
 import { CreateUserCommand } from '@commands/user/CreateUser';
+import { TYPES } from '@constants/types';
 import { ICommandHandler } from '@core/ICommandHandler';
-import { IRepository } from '@core/IRepository';
+import { IUserRepository } from '@domain/user/IUserRepository';
 import { User } from '@domain/user/User';
+import { inject, injectable } from 'inversify';
 
+@injectable()
 export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand> {
+
+  public static commandToHandle: string = CreateUserCommand.name;
+
   constructor(
-    private readonly repository: IRepository<User>
+    @inject(TYPES.UserRepository) private readonly repository: IUserRepository,
   ) {}
 
   async handle(command: CreateUserCommand) {
