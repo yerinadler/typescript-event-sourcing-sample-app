@@ -6,6 +6,7 @@ export const TYPES = {
 
   // Repositories
   BookRepository: Symbol('BookRepository'),
+  UserRepository: Symbol('UserRepository'),
 
   // Data Mappers
   BookDataMapper: Symbol('BookDataMapper'),
@@ -20,10 +21,21 @@ export const TYPES = {
   // Command Bus
   CommandBus: Symbol('CommandBus'),
 
+  // Command Handlers
+  CommandHandler: Symbol('CommandHandler'),
+
   // Event
   Event: Symbol('Event'),
   EventHandler: Symbol('EventHandler'),
+  EventStore: Symbol('EventStore'),
 
   // Event Handlers
   BookCreatedEventHandler: Symbol('BookCreatedEventHandler'),
+};
+
+
+export const NAMES = {
+  // Event Store
+  BookEventStore: Symbol('BookEventStore'),
+  UserEventStore: Symbol('UserEventStore'),
 };

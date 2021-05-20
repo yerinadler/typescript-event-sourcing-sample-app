@@ -1,12 +1,13 @@
 import { IRepository } from '@core/IRepository';
-import { injectable } from 'inversify';
+import { injectable, unmanaged } from 'inversify';
 import { AggregateRoot } from '@core/AggregateRoot';
 import { IEventStore } from '@core/IEventStore';
 @injectable()
 export class Repository<T extends AggregateRoot> implements IRepository<T> {
+
   constructor(
-    private readonly eventStore: IEventStore,
-    private readonly Type: { new (): T }
+    @unmanaged() private readonly eventStore: IEventStore,
+    @unmanaged() private readonly Type: { new (): T }
   ) {}
 
   async save(aggregateRoot: T, expectedVersion: number) {
