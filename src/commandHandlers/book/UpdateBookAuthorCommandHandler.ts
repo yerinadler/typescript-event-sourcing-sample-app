@@ -1,14 +1,16 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { ICommandHandler } from '@core/ICommandHandler';
-import { Book } from '@domain/book/Book';
 import { UpdateBookAuthorCommand } from '../../commands/book/UpdateBookAuthor';
-import { IRepository } from '@core/IRepository';
+import { TYPES } from '@constants/types';
+import { IBookRepository } from '@domain/book/IBookRepository';
 
 @injectable()
 export class UpdateBookAuthorCommandHandler implements ICommandHandler<UpdateBookAuthorCommand> {
+
+  public static commandToHandle: string = UpdateBookAuthorCommand.name;
   
   constructor(
-    private readonly repository: IRepository<Book>,
+    @inject(TYPES.BookRepository) private readonly repository: IBookRepository,
   ) {}
   
   async handle(command: UpdateBookAuthorCommand) {
