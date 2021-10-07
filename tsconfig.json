@@ -47,10 +47,10 @@
         "core/*"
       ],
       "@commandHandlers/*": [
-        "commandHandlers/*"
+        "application/commandHandlers/*"
       ],
       "@eventHandlers/*": [
-        "eventHandlers/*"
+        "application/eventHandlers/*"
       ],
       "@commands/*": [
         "commands/*"

@@ -1,5 +1,7 @@
 import { IEvent } from './IEvent';
 
+// TODO: Revise typing
 export interface IEventHandler<T extends IEvent> {
-  handle(): void;
+  event: string;
+  handle(message: string): void;
 }

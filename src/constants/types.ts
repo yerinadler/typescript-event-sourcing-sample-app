@@ -2,7 +2,8 @@ export const TYPES = {
   // Dependencies
   Db: Symbol('Db'),
   Redis: Symbol('Redis'),
-  EventBus: Symbol('EventBus'),
+  EventPublisher: Symbol('EventPublisher'),
+  EventSubscriber: Symbol('EventPSubscriber'),
 
   // Repositories
   BookRepository: Symbol('BookRepository'),
