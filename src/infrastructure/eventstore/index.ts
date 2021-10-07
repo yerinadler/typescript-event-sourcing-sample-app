@@ -3,12 +3,12 @@ import { EventDescriptor } from '@core/EventDescriptor';
 import { IEvent } from '@core/IEvent';
 import { IEventStore } from '@core/IEventStore';
 import { Collection } from 'mongodb';
-import Event from 'events';
+import { IEventPublisher } from '@core/IEventPublisher';
 export class EventStore implements IEventStore {
 
   constructor(
     private readonly eventCollection: Collection,
-    private readonly eventBus: Event.EventEmitter,
+    private readonly eventPublisher: IEventPublisher,
   ) {}
 
   async saveEvents(aggregateGuid: string, events: IEvent[], expectedVersion: number) {
@@ -28,7 +28,7 @@ export class EventStore implements IEventStore {
       event.version = i;
       const eventObject = new EventDescriptor(aggregateGuid, { eventType: event.constructor.name, ...event }, i);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.eventBus.emit(eventObject.eventPayload.eventType!, event);
+      this.eventPublisher.publish(eventObject.eventPayload.eventType!, event);
       operations.push({ insertOne: eventObject });
     }
 
