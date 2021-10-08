@@ -18,14 +18,14 @@ import { UpdateBookAuthorCommandHandler } from '@commandHandlers/book/UpdateBook
 import { BookCreatedEventHandler } from '@eventHandlers/book/BookCreatedEventHandler';
 import { IEventHandler } from '@core/IEventHandler';
 import { EventHandler } from '@infrastructure/eventHandler';
-import RedisClient from '@infrastructure/redis';
+import { getRedisClient } from '@infrastructure/redis';
 import { BookAuthorChangedEventHandler } from '@eventHandlers/book/BookAuthorChangedEventHandler';
 import { FakeNotificationEventHandler } from '@eventHandlers/book/FakeNotificationEventHandler';
-import { BookReadModelFacade, IBookReadModelFacade } from '@projection/book/ReadModel';
+import { BookReadModelFacade, IBookReadModelFacade } from '@application/projection/book/ReadModel';
 import { CreateUserCommandHandler } from '@commandHandlers/user/CreateUserCommandHandler';
 import { UserCreatedEventHandler } from '@eventHandlers/user/UserCreatedEventHandler';
 import { AuthorCreatedEventHandler } from '@eventHandlers/author/AuthorCreatedEventHandler';
-import { AuthorReadModelFacade, IAuthorReadModelFacade } from '@projection/author/ReadModel';
+import { AuthorReadModelFacade, IAuthorReadModelFacade } from '@application/projection/author/ReadModel';
 import { IBookRepository } from '@domain/book/IBookRepository';
 import { BookRepository } from '@infrastructure/repositories/BookRepository';
 import { Command } from '@core/Command';
@@ -46,13 +46,14 @@ const initialise = async () => {
   const db: Db = await createMongodbConnection(config.MONGODB_URI);
   
   // Initialise Redis as a primary event subscriber
-  const eventSubscriber: Redis.Redis = new Redis();
+  const eventSubscriber: Redis.Redis = getRedisClient();
   await eventSubscriber.subscribe([
     BookCreated.name,
     UserCreated.name,
     AuthorCreated.name,
     BookAuthorChanged.name,
   ]);
+
   container.bind<Redis.Redis>(TYPES.EventSubscriber).toConstantValue(eventSubscriber);
   container.bind<IEventPublisher>(TYPES.EventPublisher).to(EventPublisher);
 
@@ -83,7 +84,7 @@ const initialise = async () => {
   container.bind<CommandBus>(TYPES.CommandBus).toConstantValue(commandBus);
   
   // Redis DB client (cache)
-  container.bind<Redis.Redis>(TYPES.Redis).toConstantValue(RedisClient);
+  container.bind<Redis.Redis>(TYPES.Redis).toConstantValue(getRedisClient());
 
   // Read models for query
   container.bind<IBookReadModelFacade>(TYPES.BookReadModelFacade).to(BookReadModelFacade);
