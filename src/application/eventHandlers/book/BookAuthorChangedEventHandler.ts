@@ -3,7 +3,7 @@ import { IEventHandler } from '@core/IEventHandler';
 import { inject, injectable } from 'inversify';
 import { BookAuthorChanged } from '@domain/book/events/BookAuthorChanged';
 import { Redis } from 'ioredis';
-import { IAuthorReadModelFacade } from 'projection/author/ReadModel';
+import { IAuthorReadModelFacade } from '@application/projection/author/ReadModel';
 
 @injectable()
 export class BookAuthorChangedEventHandler implements IEventHandler<BookAuthorChanged> {
