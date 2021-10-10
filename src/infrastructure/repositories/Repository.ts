@@ -1,10 +1,10 @@
-import { IRepository } from '@core/IRepository';
 import { injectable, unmanaged } from 'inversify';
+
 import { AggregateRoot } from '@core/AggregateRoot';
 import { IEventStore } from '@core/IEventStore';
+import { IRepository } from '@core/IRepository';
 @injectable()
 export class Repository<T extends AggregateRoot> implements IRepository<T> {
-
   constructor(
     @unmanaged() private readonly eventStore: IEventStore,
     @unmanaged() private readonly Type: { new (): T }

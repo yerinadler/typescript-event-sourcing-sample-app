@@ -1,10 +1,12 @@
+import Event from 'events';
+
+import { inject, injectable } from 'inversify';
+import { Redis } from 'ioredis';
+
 import { TYPES } from '@constants/types';
 import { IEventHandler } from '@core/IEventHandler';
 import { UserEvent } from '@domain/user/events';
 import { UserCreated } from '@domain/user/events/UserCreated';
-import Event from 'events';
-import { inject, injectable } from 'inversify';
-import { Redis } from 'ioredis';
 
 @injectable()
 export class UserCreatedEventHandler implements IEventHandler<UserEvent> {
@@ -15,12 +17,15 @@ export class UserCreatedEventHandler implements IEventHandler<UserEvent> {
 
   async handle() {
     this.eventBus.on(UserCreated.name, async (event) => {
-      this.redisClient.set(`users:${event.guid}`, JSON.stringify({
-        email: event.email,
-        firstname: event.firstname,
-        lastname: event.lastname,
-        dateOfBirth: event.dateOfBirth.toString()
-      }));
+      this.redisClient.set(
+        `users:${event.guid}`,
+        JSON.stringify({
+          email: event.email,
+          firstname: event.firstname,
+          lastname: event.lastname,
+          dateOfBirth: event.dateOfBirth.toString(),
+        })
+      );
     });
   }
 }

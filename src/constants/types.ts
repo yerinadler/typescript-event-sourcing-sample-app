@@ -33,7 +33,6 @@ export const TYPES = {
   BookCreatedEventHandler: Symbol('BookCreatedEventHandler'),
 };
 
-
 export const NAMES = {
   // Event Store
   BookEventStore: Symbol('BookEventStore'),

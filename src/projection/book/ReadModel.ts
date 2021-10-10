@@ -1,15 +1,16 @@
+import { inject, injectable } from 'inversify';
+import { Redis } from 'ioredis';
+
 import { TYPES } from '@constants/types';
 import { NotFoundException } from '@core/ApplicationError';
 import { IReadModelFacade } from '@core/IReadModelFacade';
-import { inject, injectable } from 'inversify';
-import Redis from 'ioredis';
 
 export class BookListDTO {
   constructor(
     public readonly name: string,
     public readonly author: string,
     public readonly price: number,
-    public readonly version: number,
+    public readonly version: number
   ) {}
 }
 
@@ -17,15 +18,12 @@ export interface IBookReadModelFacade extends IReadModelFacade<any> {}
 
 @injectable()
 export class BookReadModelFacade implements IBookReadModelFacade {
-
-  constructor(
-    @inject(TYPES.Redis) private readonly redisClient: Redis.Redis,
-  ) {}
+  constructor(@inject(TYPES.Redis) private readonly redisClient: Redis) {}
 
   async getAll() {
     const books = [];
     const keys = await this.redisClient.keys('books:*');
-    
+
     for (const key of keys) {
       const result = await this.redisClient.get(key);
       if (result) {

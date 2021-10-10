@@ -41,12 +41,16 @@
     "uuid": "^8.2.0"
   },
   "devDependencies": {
+    "@types/node": "^16.10.3",
     "@typescript-eslint/eslint-plugin": "^3.5.0",
     "@typescript-eslint/parser": "^3.5.0",
-    "eslint": "^7.4.0",
-    "eslint-plugin-import": "^2.22.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-node": "^11.1.0",
-    "prettier": "^2.0.5",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.4.1",
     "typescript": "^3.9.6"
   }
 }

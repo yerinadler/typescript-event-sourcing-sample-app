@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+
 import { IEvent } from './IEvent';
 
 export abstract class AggregateRoot {
@@ -26,10 +27,10 @@ export abstract class AggregateRoot {
     this[`apply${event.eventType}`](event);
     if (isNew) this.__changes.push(event);
   }
-  
+
   public loadFromHistory(events: IEvent[]) {
     for (const event of events) {
       this.applyEvent(event);
     }
   }
-} 
+}
