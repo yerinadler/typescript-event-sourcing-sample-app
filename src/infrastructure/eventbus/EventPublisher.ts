@@ -1,8 +1,9 @@
+import { classToPlain } from 'class-transformer';
+import { injectable } from 'inversify';
+import Redis from 'ioredis';
+
 import { IEvent } from '@core/IEvent';
 import { IEventPublisher } from '@core/IEventPublisher';
-import { injectable } from 'inversify';
-import { classToPlain } from 'class-transformer';
-import Redis from 'ioredis';
 
 @injectable()
 export class EventPublisher implements IEventPublisher {

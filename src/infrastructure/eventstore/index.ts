@@ -1,15 +1,12 @@
+import { Collection } from 'mongodb';
+
 import { ConcurrencyException, NotFoundException } from '@core/ApplicationError';
 import { EventDescriptor } from '@core/EventDescriptor';
 import { IEvent } from '@core/IEvent';
-import { IEventStore } from '@core/IEventStore';
-import { Collection } from 'mongodb';
 import { IEventPublisher } from '@core/IEventPublisher';
+import { IEventStore } from '@core/IEventStore';
 export class EventStore implements IEventStore {
-
-  constructor(
-    private readonly eventCollection: Collection,
-    private readonly eventPublisher: IEventPublisher,
-  ) {}
+  constructor(private readonly eventCollection: Collection, private readonly eventPublisher: IEventPublisher) {}
 
   async saveEvents(aggregateGuid: string, events: IEvent[], expectedVersion: number) {
     const operations: any[] = [];

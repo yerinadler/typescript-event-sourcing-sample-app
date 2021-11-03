@@ -1,5 +1,6 @@
-import { controller, httpGet, request, response } from 'inversify-express-utils';
 import { Request, Response } from 'express';
+import { controller, httpGet, request, response } from 'inversify-express-utils';
+
 import { ok } from '../processors/response';
 
 @controller('')
