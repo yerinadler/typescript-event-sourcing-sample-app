@@ -2,14 +2,20 @@ env:
   browser: true
   es2020: true
 extends:
-  - "eslint:recommended"
-  - "plugin:@typescript-eslint/recommended"
-parser: "@typescript-eslint/parser"
+  - 'eslint:recommended'
+  - 'plugin:@typescript-eslint/recommended'
+  - 'plugin:prettier/recommended'
+  - 'plugin:import/recommended'
+  - 'plugin:import/typescript'
+parser: '@typescript-eslint/parser'
+settings:
+  import/resolver:
+    typescript: {}
 parserOptions:
   ecmaVersion: 11
   sourceType: module
 plugins:
-  - "@typescript-eslint"
+  - '@typescript-eslint'
 rules:
   indent:
     - error
@@ -23,10 +29,22 @@ rules:
   semi:
     - error
     - always
-  "@typescript-eslint/no-explicit-any":
+  import/order:
+    - error
+    - groups:
+        - builtin
+        - external
+        - internal
+        - parent
+        - sibling
+        - index
+      newlines-between: always
+      alphabetize:
+        order: asc
+        caseInsensitive: true
+  '@typescript-eslint/no-explicit-any':
     - off
-  "@typescript-eslint/explicit-module-boundary-types":
+  '@typescript-eslint/explicit-module-boundary-types':
     - off
-  "@typescript-eslint/no-empty-interface":
+  '@typescript-eslint/no-empty-interface':
     - off
-  
