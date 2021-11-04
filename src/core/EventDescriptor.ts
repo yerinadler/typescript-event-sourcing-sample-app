@@ -4,6 +4,6 @@ export class EventDescriptor {
   constructor(
     public readonly aggregateGuid: string,
     public readonly eventPayload: IEvent,
-    public readonly version: number,
+    public readonly version: number
   ) {}
 }

@@ -6,14 +6,7 @@ export class CreateUserCommand extends Command {
   public lastname: string;
   public dateOfBirth: Date;
 
-
-  constructor(
-    email: string,
-    firstname: string,
-    lastname: string,
-    dateOfBirth: Date,
-    guid?: string
-  ) {
+  constructor(email: string, firstname: string, lastname: string, dateOfBirth: Date, guid?: string) {
     super(guid);
     this.email = email;
     this.firstname = firstname;

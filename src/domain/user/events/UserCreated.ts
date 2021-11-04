@@ -1,5 +1,5 @@
-import { IEvent } from '@core/IEvent';
 import { Event } from '@core/Event';
+import { IEvent } from '@core/IEvent';
 
 export class UserCreated extends Event implements IEvent {
   constructor(

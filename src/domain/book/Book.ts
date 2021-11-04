@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AggregateRoot } from '@core/AggregateRoot';
-import { BookCreated } from './events/BookCreated';
-import { BookAuthorChanged } from './events/BookAuthorChanged';
-export class Book extends AggregateRoot {
 
+import { BookAuthorChanged } from './events/BookAuthorChanged';
+import { BookCreated } from './events/BookCreated';
+export class Book extends AggregateRoot {
   public name!: string;
   public authorId!: string;
   public price!: number;

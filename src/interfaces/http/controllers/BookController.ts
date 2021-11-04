@@ -1,32 +1,26 @@
 import { Request, Response } from 'express';
-import {
-  controller,
-  httpGet,
-  request,
-  response,
-  httpPost,
-  httpPut,
-} from 'inversify-express-utils';
 import { inject } from 'inversify';
-import { TYPES } from '@constants/types';
-import { ok } from '../processors/response';
-import { CommandBus } from '@infrastructure/commandBus';
+import { controller, httpGet, request, response, httpPost, httpPut } from 'inversify-express-utils';
+
 import { CreateBookCommand } from '@commands/book/CreateBook';
 import { UpdateBookAuthorCommand } from '@commands/book/UpdateBookAuthor';
+import { TYPES } from '@constants/types';
+import { CommandBus } from '@infrastructure/commandBus';
+
 import { IBookReadModelFacade } from '../../../application/projection/book/ReadModel';
+import { ok } from '../processors/response';
 
 @controller('/api/v1/books')
 export class BookController {
   constructor(
     @inject(TYPES.CommandBus) private readonly commandBus: CommandBus,
-    @inject(TYPES.BookReadModelFacade) private readonly readmodel: IBookReadModelFacade,
+    @inject(TYPES.BookReadModelFacade) private readonly readmodel: IBookReadModelFacade
   ) {}
 
   @httpGet('/')
   async getAllBooks(@request() req: Request, @response() res: Response) {
     const books = await this.readmodel.getAll();
     return res.json(ok('Successfully retrieved all books', books));
-
   }
 
   @httpGet('/:guid')

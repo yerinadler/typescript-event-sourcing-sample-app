@@ -1,4 +1,5 @@
 import { AggregateRoot } from '@core/AggregateRoot';
+
 import { UserCreated } from './events/UserCreated';
 
 export class User extends AggregateRoot {
