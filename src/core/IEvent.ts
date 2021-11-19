@@ -1,6 +1,6 @@
-import { Message } from './IMessage';
+import { IMessage } from './IMessage';
 
-export interface IEvent extends Message {
+export interface IEvent extends IMessage {
   eventType?: string;
   version?: number;
 }
