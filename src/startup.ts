@@ -103,7 +103,7 @@ const initialise = async () => {
   apiServer.listen(config.API_PORT, () =>
     console.log('The application is initialised on the port %s', config.API_PORT)
   );
-  // ======================================================
+
   return container;
 };
 
