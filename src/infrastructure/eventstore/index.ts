@@ -3,10 +3,10 @@ import { Collection } from 'mongodb';
 import { ConcurrencyException, NotFoundException } from '@core/ApplicationError';
 import { EventDescriptor } from '@core/EventDescriptor';
 import { IEvent } from '@core/IEvent';
-import { IEventPublisher } from '@core/IEventPublisher';
+import { IEventBus } from '@core/IEventBus';
 import { IEventStore } from '@core/IEventStore';
 export class EventStore implements IEventStore {
-  constructor(private readonly eventCollection: Collection, private readonly eventPublisher: IEventPublisher) {}
+  constructor(private readonly eventCollection: Collection, private readonly _eventBus: IEventBus) {}
 
   async saveEvents(aggregateGuid: string, events: IEvent[], expectedVersion: number) {
     const operations: any[] = [];
@@ -25,7 +25,7 @@ export class EventStore implements IEventStore {
       event.version = i;
       const eventObject = new EventDescriptor(aggregateGuid, { eventType: event.constructor.name, ...event }, i);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.eventPublisher.publish(eventObject.eventPayload.eventType!, event);
+      this._eventBus.publish(eventObject.eventPayload.eventType!, event);
       operations.push({ insertOne: eventObject });
     }
 
