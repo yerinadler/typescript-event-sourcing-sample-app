@@ -5,19 +5,18 @@ import { ICommandHandler } from '@core/ICommandHandler';
 
 @injectable()
 export class CommandBus {
-  public handlers: any = new Map();
+  public handlers: Map<string, ICommandHandler<ICommand>> = new Map();
 
-  // TODO: Use class symbol and types instead of string in "send" method
-  public registerHandler<TCommand>(commandName: string, handler: ICommandHandler<TCommand>) {
-    if (this.handlers[commandName]) {
+  public registerHandler<TCommand extends ICommand>(commandName: string, handler: ICommandHandler<TCommand>) {
+    if (this.handlers.has(commandName)) {
       return;
     }
     this.handlers.set(commandName, handler);
   }
 
   public async send(command: ICommand) {
-    if (this.handlers.get(command.constructor.name)) {
-      await this.handlers.get(command.constructor.name).handle(command);
+    if (this.handlers.has(command.constructor.name)) {
+      await (this.handlers.get(command.constructor.name) as ICommandHandler<ICommand>).handle(command);
     }
   }
 }
