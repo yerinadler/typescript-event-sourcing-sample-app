@@ -15,8 +15,8 @@ import config from '@config/main';
 import { NAMES, TYPES } from '@constants/types';
 import { Command } from '@core/Command';
 import { ICommandHandler } from '@core/ICommandHandler';
+import { IEventBus } from '@core/IEventBus';
 import { IEventHandler } from '@core/IEventHandler';
-import { IEventPublisher } from '@core/IEventPublisher';
 import { IEventStore } from '@core/IEventStore';
 import { AuthorCreated } from '@domain/book/events/AuthorCreated';
 import { BookAuthorChanged } from '@domain/book/events/BookAuthorChanged';
@@ -31,8 +31,7 @@ import { FakeNotificationEventHandler } from '@eventHandlers/book/FakeNotificati
 import { UserCreatedEventHandler } from '@eventHandlers/user/UserCreatedEventHandler';
 import { CommandBus } from '@infrastructure/commandBus';
 import { createMongodbConnection } from '@infrastructure/db/mongodb';
-import { EventPublisher } from '@infrastructure/eventbus/EventPublisher';
-import { EventHandler } from '@infrastructure/eventHandler';
+import { EventBus } from '@infrastructure/eventbus';
 import { EventStore } from '@infrastructure/eventstore';
 import { getRedisClient } from '@infrastructure/redis';
 import { BookRepository } from '@infrastructure/repositories/BookRepository';
@@ -45,17 +44,29 @@ const initialise = async () => {
   // Module Registration
   const db: Db = await createMongodbConnection(config.MONGODB_URI);
 
-  // Initialise Redis as a primary event subscriber
-  const eventSubscriber: Redis = getRedisClient();
-  await eventSubscriber.subscribe([BookCreated.name, UserCreated.name, AuthorCreated.name, BookAuthorChanged.name]);
+  // Initialise Redis
+  const redisSubscriber: Redis = getRedisClient();
+  const redis: Redis = getRedisClient();
+  await redisSubscriber.subscribe([BookCreated.name, UserCreated.name, AuthorCreated.name, BookAuthorChanged.name]);
 
-  container.bind<Redis>(TYPES.EventSubscriber).toConstantValue(eventSubscriber);
-  container.bind<IEventPublisher>(TYPES.EventPublisher).to(EventPublisher);
+  container.bind<Redis>(TYPES.RedisSubscriber).toConstantValue(redisSubscriber);
+  container.bind<Redis>(TYPES.Redis).toConstantValue(redis);
+  container.bind<IEventBus>(TYPES.EventBus).to(EventBus);
+
+  // Read models for query
+  container.bind<IBookReadModelFacade>(TYPES.BookReadModelFacade).to(BookReadModelFacade);
+  container.bind<IAuthorReadModelFacade>(TYPES.AuthorReadModelFacade).to(AuthorReadModelFacade);
+  // Event Handlers
+  container.bind<IEventHandler<BookCreated>>(TYPES.Event).to(FakeNotificationEventHandler);
+  container.bind<IEventHandler<BookAuthorChanged>>(TYPES.Event).to(BookAuthorChangedEventHandler);
+  container.bind<IEventHandler<UserCreated>>(TYPES.Event).to(UserCreatedEventHandler);
+  container.bind<IEventHandler<UserCreated>>(TYPES.Event).to(AuthorCreatedEventHandler);
+  container.bind<IEventHandler<BookCreated>>(TYPES.Event).to(BookCreatedEventHandler);
 
   // Redis is also an event publisher here
-  const eventPublisher = container.get<IEventPublisher>(TYPES.EventPublisher);
-  const bookEventStore: IEventStore = new EventStore(db.collection('book-events'), eventPublisher);
-  const userEventStore: IEventStore = new EventStore(db.collection('user-events'), eventPublisher);
+  const eventBus = container.get<IEventBus>(TYPES.EventBus);
+  const bookEventStore: IEventStore = new EventStore(db.collection('book-events'), eventBus);
+  const userEventStore: IEventStore = new EventStore(db.collection('user-events'), eventBus);
 
   // Prepare persistence components
   container.bind<Db>(TYPES.Db).toConstantValue(db);
@@ -69,28 +80,13 @@ const initialise = async () => {
   container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(UpdateBookAuthorCommandHandler);
   container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(CreateUserCommandHandler);
 
-  // Cretae command bus
+  // Create command bus
   const commandBus = new CommandBus();
-
   // Register all the command handler here
   container.getAll<ICommandHandler<Command>[]>(TYPES.CommandHandler).forEach((handler: any) => {
     commandBus.registerHandler(handler.constructor.commandToHandle, handler);
   });
   container.bind<CommandBus>(TYPES.CommandBus).toConstantValue(commandBus);
-
-  // Redis DB client (cache)
-  container.bind<Redis>(TYPES.Redis).toConstantValue(getRedisClient());
-
-  // Read models for query
-  container.bind<IBookReadModelFacade>(TYPES.BookReadModelFacade).to(BookReadModelFacade);
-  container.bind<IAuthorReadModelFacade>(TYPES.AuthorReadModelFacade).to(AuthorReadModelFacade);
-
-  container.bind<EventHandler>(TYPES.EventHandler).to(EventHandler);
-  container.bind<IEventHandler<BookCreated>>(TYPES.Event).to(FakeNotificationEventHandler);
-  container.bind<IEventHandler<BookAuthorChanged>>(TYPES.Event).to(BookAuthorChangedEventHandler);
-  container.bind<IEventHandler<UserCreated>>(TYPES.Event).to(UserCreatedEventHandler);
-  container.bind<IEventHandler<UserCreated>>(TYPES.Event).to(AuthorCreatedEventHandler);
-  container.bind<IEventHandler<BookCreated>>(TYPES.Event).to(BookCreatedEventHandler);
 
   const server = new InversifyExpressServer(container);
 
