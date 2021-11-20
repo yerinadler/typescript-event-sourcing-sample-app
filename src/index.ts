@@ -4,12 +4,12 @@ dotenv.config();
 
 import 'reflect-metadata';
 import { TYPES } from '@constants/types';
-import { EventHandler } from '@infrastructure/eventHandler';
+import { IEventBus } from '@core/IEventBus';
 
 import { initialise } from './startup';
 
 (async () => {
   const container = await initialise();
-  const baseEventHandler = container.get<EventHandler>(TYPES.EventHandler);
-  baseEventHandler.initialise();
+  const baseEventHandler = container.get<IEventBus>(TYPES.EventBus);
+  baseEventHandler.subscribeEvents();
 })();
