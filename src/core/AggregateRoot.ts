@@ -5,7 +5,12 @@ import { IEvent } from './IEvent';
 export abstract class AggregateRoot {
   [x: string]: any;
   public guid: string;
+  private __version = -1;
   private __changes: any[] = [];
+
+  get version() {
+    return this.__version;
+  }
 
   constructor(guid?: string) {
     this.guid = guid || nanoid();
@@ -31,6 +36,7 @@ export abstract class AggregateRoot {
   public loadFromHistory(events: IEvent[]) {
     for (const event of events) {
       this.applyEvent(event);
+      this.__version++;
     }
   }
 }

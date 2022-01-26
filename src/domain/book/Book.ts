@@ -2,11 +2,13 @@
 import { AggregateRoot } from '@core/AggregateRoot';
 
 import { BookAuthorChanged } from './events/BookAuthorChanged';
+import { BookBorrowed } from './events/BookBorrowed';
 import { BookCreated } from './events/BookCreated';
 export class Book extends AggregateRoot {
   public name!: string;
   public authorId!: string;
   public price!: number;
+  public isBorrowed = false;
 
   constructor();
 
@@ -25,6 +27,11 @@ export class Book extends AggregateRoot {
     this.applyChange(new BookAuthorChanged(this.guid, authorId));
   }
 
+  public markAsBorrowed() {
+    this.isBorrowed = true;
+    this.applyChange(new BookBorrowed(this.guid));
+  }
+
   public applyBookCreated(event: BookCreated): void {
     this.guid = event.guid;
     this.name = event.name;
@@ -34,5 +41,9 @@ export class Book extends AggregateRoot {
 
   public applyBookAuthorChanged(event: BookAuthorChanged): void {
     this.authorId = event.authorId;
+  }
+
+  public applyBookBorrowed() {
+    this.isBorrowed = true;
   }
 }
