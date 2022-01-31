@@ -9,7 +9,9 @@ import { Db } from 'mongodb';
 import { AuthorReadModelFacade, IAuthorReadModelFacade } from '@application/projection/author/ReadModel';
 import { BookReadModelFacade, IBookReadModelFacade } from '@application/projection/book/ReadModel';
 import { CreateBookCommandHandler } from '@commandHandlers/book/CreateBookCommandHandler';
+import { MarkBookAsBorrowedCommandHandler } from '@commandHandlers/book/MarkBookAsBorrowedCommandHandler';
 import { UpdateBookAuthorCommandHandler } from '@commandHandlers/book/UpdateBookAuthorCommandHandler';
+import { CreateLoanCommandHandler } from '@commandHandlers/loan/CreateLoanCommandHandler';
 import { CreateUserCommandHandler } from '@commandHandlers/user/CreateUserCommandHandler';
 import config from '@config/main';
 import { NAMES, TYPES } from '@constants/types';
@@ -20,14 +22,19 @@ import { IEventHandler } from '@core/IEventHandler';
 import { IEventStore } from '@core/IEventStore';
 import { AuthorCreated } from '@domain/book/events/AuthorCreated';
 import { BookAuthorChanged } from '@domain/book/events/BookAuthorChanged';
+import { BookBorrowed } from '@domain/book/events/BookBorrowed';
 import { BookCreated } from '@domain/book/events/BookCreated';
 import { IBookRepository } from '@domain/book/IBookRepository';
+import { LoanCreated } from '@domain/loan/events/LoanCreated';
+import { ILoanRepository } from '@domain/loan/ILoanRepository';
 import { UserCreated } from '@domain/user/events/UserCreated';
 import { IUserRepository } from '@domain/user/IUserRepository';
 import { AuthorCreatedEventHandler } from '@eventHandlers/author/AuthorCreatedEventHandler';
 import { BookAuthorChangedEventHandler } from '@eventHandlers/book/BookAuthorChangedEventHandler';
+import { BookBorrowedEventHandler } from '@eventHandlers/book/BookBorrowedEventHandler';
 import { BookCreatedEventHandler } from '@eventHandlers/book/BookCreatedEventHandler';
 import { FakeNotificationEventHandler } from '@eventHandlers/book/FakeNotificationEventHandler';
+import { LoanCreatedEventHandler } from '@eventHandlers/loan/LoanCreatedEventHandler';
 import { UserCreatedEventHandler } from '@eventHandlers/user/UserCreatedEventHandler';
 import { CommandBus } from '@infrastructure/commandBus';
 import { createMongodbConnection } from '@infrastructure/db/mongodb';
@@ -35,6 +42,7 @@ import { EventBus } from '@infrastructure/eventbus';
 import { EventStore } from '@infrastructure/eventstore';
 import { getRedisClient } from '@infrastructure/redis';
 import { BookRepository } from '@infrastructure/repositories/BookRepository';
+import { LoanRepository } from '@infrastructure/repositories/LoanRepository';
 import { UserRepository } from '@infrastructure/repositories/UserRepository';
 import { errorHandler } from '@interfaces/http/middlewares/ErrorHandler';
 
@@ -47,7 +55,14 @@ const initialise = async () => {
   // Initialise Redis
   const redisSubscriber: Redis = getRedisClient();
   const redis: Redis = getRedisClient();
-  await redisSubscriber.subscribe([BookCreated.name, UserCreated.name, AuthorCreated.name, BookAuthorChanged.name]);
+  await redisSubscriber.subscribe([
+    BookCreated.name,
+    UserCreated.name,
+    AuthorCreated.name,
+    BookAuthorChanged.name,
+    LoanCreated.name,
+    BookBorrowed.name,
+  ]);
 
   container.bind<Redis>(TYPES.RedisSubscriber).toConstantValue(redisSubscriber);
   container.bind<Redis>(TYPES.Redis).toConstantValue(redis);
@@ -62,23 +77,32 @@ const initialise = async () => {
   container.bind<IEventHandler<UserCreated>>(TYPES.Event).to(UserCreatedEventHandler);
   container.bind<IEventHandler<UserCreated>>(TYPES.Event).to(AuthorCreatedEventHandler);
   container.bind<IEventHandler<BookCreated>>(TYPES.Event).to(BookCreatedEventHandler);
+  container.bind<IEventHandler<BookBorrowed>>(TYPES.Event).to(BookBorrowedEventHandler);
 
   // Redis is also an event publisher here
   const eventBus = container.get<IEventBus>(TYPES.EventBus);
   const bookEventStore: IEventStore = new EventStore(db.collection('book-events'), eventBus);
   const userEventStore: IEventStore = new EventStore(db.collection('user-events'), eventBus);
+  const loanEventStore: IEventStore = new EventStore(db.collection('loan-events'), eventBus);
 
   // Prepare persistence components
   container.bind<Db>(TYPES.Db).toConstantValue(db);
   container.bind<IEventStore>(TYPES.EventStore).toConstantValue(bookEventStore).whenTargetNamed(NAMES.BookEventStore);
   container.bind<IEventStore>(TYPES.EventStore).toConstantValue(userEventStore).whenTargetNamed(NAMES.UserEventStore);
+  container.bind<IEventStore>(TYPES.EventStore).toConstantValue(loanEventStore).whenTargetNamed(NAMES.LoanEventStore);
   container.bind<IBookRepository>(TYPES.BookRepository).to(BookRepository);
   container.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository);
+  container.bind<ILoanRepository>(TYPES.LoanRepository).to(LoanRepository);
 
   // Register command handlers
   container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(CreateBookCommandHandler);
   container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(UpdateBookAuthorCommandHandler);
   container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(CreateUserCommandHandler);
+  container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(CreateLoanCommandHandler);
+  container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(MarkBookAsBorrowedCommandHandler);
+
+  // Event Handlers that depend on CommandBus
+  container.bind<IEventHandler<LoanCreated>>(TYPES.Event).to(LoanCreatedEventHandler);
 
   // Create command bus
   const commandBus = new CommandBus();

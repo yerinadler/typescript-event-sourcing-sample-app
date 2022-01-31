@@ -8,6 +8,7 @@ export const TYPES = {
   // Repositories
   BookRepository: Symbol('BookRepository'),
   UserRepository: Symbol('UserRepository'),
+  LoanRepository: Symbol('LoanRepository'),
 
   // Data Mappers
   BookDataMapper: Symbol('BookDataMapper'),
@@ -38,4 +39,5 @@ export const NAMES = {
   // Event Store
   BookEventStore: Symbol('BookEventStore'),
   UserEventStore: Symbol('UserEventStore'),
+  LoanEventStore: Symbol('LoanEventStore'),
 };

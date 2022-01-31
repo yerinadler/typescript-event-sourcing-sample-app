@@ -9,6 +9,7 @@ export class BookListDTO {
   constructor(
     public readonly name: string,
     public readonly author: string,
+    public readonly isBorrowed: boolean,
     public readonly price: number,
     public readonly version: number
   ) {}
