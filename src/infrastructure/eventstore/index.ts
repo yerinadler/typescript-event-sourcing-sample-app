@@ -5,8 +5,14 @@ import { EventDescriptor } from '@core/EventDescriptor';
 import { IEvent } from '@core/IEvent';
 import { IEventBus } from '@core/IEventBus';
 import { IEventStore } from '@core/IEventStore';
-export class EventStore implements IEventStore {
-  constructor(private readonly eventCollection: Collection, private readonly _eventBus: IEventBus) {}
+import { injectable, unmanaged } from 'inversify';
+
+@injectable()
+export abstract class EventStore implements IEventStore {
+  constructor(
+    @unmanaged() private readonly eventCollection: Collection,
+    @unmanaged() private readonly _eventBus: IEventBus
+  ) {}
 
   async saveEvents(aggregateGuid: string, events: IEvent[], expectedVersion: number) {
     const operations: any[] = [];
