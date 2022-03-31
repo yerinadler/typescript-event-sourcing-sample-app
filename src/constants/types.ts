@@ -33,11 +33,15 @@ export const TYPES = {
 
   // Event Handlers
   BookCreatedEventHandler: Symbol('BookCreatedEventHandler'),
-};
 
-export const NAMES = {
   // Event Store
   BookEventStore: Symbol('BookEventStore'),
   UserEventStore: Symbol('UserEventStore'),
   LoanEventStore: Symbol('LoanEventStore'),
+};
+
+export const EVENT_STREAM_NAMES = {
+  Book: Symbol('Book'),
+  User: Symbol('User'),
+  Loan: Symbol('Loan'),
 };
