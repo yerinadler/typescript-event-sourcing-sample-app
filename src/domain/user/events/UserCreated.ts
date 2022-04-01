@@ -2,6 +2,9 @@ import { Event } from '@core/Event';
 import { IEvent } from '@core/IEvent';
 
 export class UserCreated extends Event implements IEvent {
+  eventName = UserCreated.name;
+  aggregateName = 'user';
+
   constructor(
     public guid: string,
     public email: string,
@@ -9,6 +12,6 @@ export class UserCreated extends Event implements IEvent {
     public lastname: string,
     public dateOfBirth: Date
   ) {
-    super(UserCreated.name);
+    super();
   }
 }

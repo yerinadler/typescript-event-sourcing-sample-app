@@ -12,9 +12,8 @@ export class LoanCreatedEventHandler implements IEventHandler<LoanCreated> {
 
   constructor(@inject(TYPES.CommandBus) private readonly commandBus: ICommandBus) {}
 
-  async handle(message: string) {
-    const event: LoanCreated = JSON.parse(message);
+  async handle(event: LoanCreated) {
     console.log(`Book with the ID ${event.bookId} loaned by the user ${event.userId}`);
-    await this.commandBus.send(new MarkBookAsBorrowedCommand(event.bookId));
+    this.commandBus.send(new MarkBookAsBorrowedCommand(event.bookId));
   }
 }

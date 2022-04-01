@@ -1,3 +1,4 @@
+import { injectable, unmanaged } from 'inversify';
 import { Collection } from 'mongodb';
 
 import { ConcurrencyException, NotFoundException } from '@core/ApplicationError';
@@ -5,7 +6,6 @@ import { EventDescriptor } from '@core/EventDescriptor';
 import { IEvent } from '@core/IEvent';
 import { IEventBus } from '@core/IEventBus';
 import { IEventStore } from '@core/IEventStore';
-import { injectable, unmanaged } from 'inversify';
 
 @injectable()
 export abstract class EventStore implements IEventStore {
@@ -17,9 +17,8 @@ export abstract class EventStore implements IEventStore {
   async saveEvents(aggregateGuid: string, events: IEvent[], expectedVersion: number) {
     const operations: any[] = [];
 
-    // Try to get the latest event for the aggregate
     const latestEvent = await this.getLastEventDescriptor(aggregateGuid);
-    // If it does not exist, create the new empty EventDescriptor
+
     if (latestEvent && latestEvent.version !== expectedVersion && expectedVersion !== -1) {
       throw new ConcurrencyException('Cannot perform the operation due to internal conflict');
     }
@@ -29,9 +28,8 @@ export abstract class EventStore implements IEventStore {
     for (const event of events) {
       i++;
       event.version = i;
-      const eventObject = new EventDescriptor(aggregateGuid, { eventType: event.constructor.name, ...event }, i);
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this._eventBus.publish(eventObject.eventPayload.eventType!, event);
+      const eventObject = new EventDescriptor(aggregateGuid, event.aggregateName, event, i);
+      this._eventBus.publish(event.aggregateName, event);
       operations.push({ insertOne: eventObject });
     }
 
@@ -43,7 +41,7 @@ export abstract class EventStore implements IEventStore {
     if (!events.length) {
       throw new NotFoundException('Aggregate with the requested Guid does not exist');
     }
-    return events.map((eventDescriptor: EventDescriptor) => eventDescriptor.eventPayload);
+    return events.map((eventDescriptor: EventDescriptor) => eventDescriptor.payload);
   }
 
   private async getLastEventDescriptor(aggregateGuid: string) {

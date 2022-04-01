@@ -8,15 +8,14 @@ import { BookBorrowed } from '@domain/book/events/BookBorrowed';
 
 @injectable()
 export class BookBorrowedEventHandler implements IEventHandler<BookBorrowed> {
-  public event: string = BookBorrowed.name;
+  public event = BookBorrowed.name;
 
   constructor(
     @inject(TYPES.Redis) private readonly redisClient: Redis,
     @inject(TYPES.AuthorReadModelFacade) private authorReadModel: IAuthorReadModelFacade
   ) {}
 
-  async handle(message: string) {
-    const event: BookBorrowed = JSON.parse(message);
+  async handle(event: BookBorrowed) {
     console.log(`Book with the ID of ${event.guid} is now borrowed`);
     const cachedBook = await this.redisClient.get(`books:${event.guid}`);
     if (cachedBook) {

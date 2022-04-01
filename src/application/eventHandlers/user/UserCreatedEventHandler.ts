@@ -7,12 +7,11 @@ import { UserCreated } from '@domain/user/events/UserCreated';
 
 @injectable()
 export class UserCreatedEventHandler implements IEventHandler<UserCreated> {
-  public event: string = UserCreated.name;
+  event = UserCreated.name;
 
   constructor(@inject(TYPES.Redis) private readonly redisClient: Redis) {}
 
-  async handle(message: string) {
-    const event = JSON.parse(message);
+  async handle(event: UserCreated) {
     this.redisClient.set(
       `users:${event.guid}`,
       JSON.stringify({

@@ -9,7 +9,7 @@ import { BookCreated } from '@domain/book/events/BookCreated';
 
 @injectable()
 export class BookCreatedEventHandler implements IEventHandler<BookCreated> {
-  public event: string = BookCreated.name;
+  public event = BookCreated.name;
 
   constructor(
     @inject(TYPES.Redis) private readonly redisClient: Redis,
@@ -17,14 +17,13 @@ export class BookCreatedEventHandler implements IEventHandler<BookCreated> {
     @inject(TYPES.AuthorReadModelFacade) private readonly authorReadModel: IAuthorReadModelFacade
   ) {}
 
-  async handle(message: string) {
-    const event = JSON.parse(message);
-    event.author = await this.authorReadModel.getById(event.authorId);
+  async handle(event: BookCreated) {
+    const authorData = await this.authorReadModel.getById(event.authorId);
     this.redisClient.set(
       `books:${event.guid}`,
       JSON.stringify({
         name: event.name,
-        author: event.author,
+        author: authorData,
         price: event.price,
         version: event.version,
       })

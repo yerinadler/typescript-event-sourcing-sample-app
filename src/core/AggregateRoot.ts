@@ -29,7 +29,7 @@ export abstract class AggregateRoot {
   }
 
   private applyEvent(event: IEvent, isNew = false) {
-    this[`apply${event.eventType}`](event);
+    this[`apply${event.eventName}`](event);
     if (isNew) this.__changes.push(event);
   }
 
