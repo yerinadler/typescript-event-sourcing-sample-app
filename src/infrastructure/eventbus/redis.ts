@@ -8,7 +8,7 @@ import { IEventBus } from '@core/IEventBus';
 import { IEventHandler } from '@core/IEventHandler';
 
 @injectable()
-export class EventBus implements IEventBus {
+export class RedisEventBus implements IEventBus {
   constructor(
     @multiInject(TYPES.Event) private readonly eventHandlers: IEventHandler<IEvent>[],
     @inject(TYPES.RedisSubscriber) private readonly _subscriber: Redis,
@@ -16,19 +16,20 @@ export class EventBus implements IEventBus {
   ) {}
 
   async publish(channel: string, event: IEvent): Promise<void> {
-    const payload: string = JSON.stringify(classToPlain(event));
+    const payload: string = JSON.stringify({ pattern: event.eventName, ...classToPlain(event) });
     await this._redis.publish(channel, payload);
   }
 
   async subscribeEvents(): Promise<void> {
     this._subscriber.on('message', async (channel: string, message: string) => {
+      const event = JSON.parse(message);
       const matchedHandlers: IEventHandler<IEvent>[] = this.eventHandlers.filter(
-        (handler) => handler.event === channel
+        (handler) => handler.event === event.pattern
       );
 
       await Promise.all(
         matchedHandlers.map((handler: IEventHandler<IEvent>) => {
-          handler.handle(message);
+          handler.handle(event);
         })
       );
     });

@@ -20,7 +20,6 @@ import { ICommandHandler } from '@core/ICommandHandler';
 import { IEventBus } from '@core/IEventBus';
 import { IEventHandler } from '@core/IEventHandler';
 import { IEventStore } from '@core/IEventStore';
-import { AuthorCreated } from '@domain/book/events/AuthorCreated';
 import { BookAuthorChanged } from '@domain/book/events/BookAuthorChanged';
 import { BookBorrowed } from '@domain/book/events/BookBorrowed';
 import { BookCreated } from '@domain/book/events/BookCreated';
@@ -38,15 +37,15 @@ import { LoanCreatedEventHandler } from '@eventHandlers/loan/LoanCreatedEventHan
 import { UserCreatedEventHandler } from '@eventHandlers/user/UserCreatedEventHandler';
 import { CommandBus } from '@infrastructure/commandBus';
 import { createMongodbConnection } from '@infrastructure/db/mongodb';
-import { EventBus } from '@infrastructure/eventbus';
+import { RedisEventBus } from '@infrastructure/eventbus/redis';
+import { BookEventStore } from '@infrastructure/eventstore/BookEventStore';
+import { LoanEventStore } from '@infrastructure/eventstore/LoanEventStore';
+import { UserEventStore } from '@infrastructure/eventstore/UserEventStore';
 import { getRedisClient } from '@infrastructure/redis';
 import { BookRepository } from '@infrastructure/repositories/BookRepository';
 import { LoanRepository } from '@infrastructure/repositories/LoanRepository';
 import { UserRepository } from '@infrastructure/repositories/UserRepository';
 import { errorHandler } from '@interfaces/http/middlewares/ErrorHandler';
-import { BookEventStore } from '@infrastructure/eventstore/BookEventStore';
-import { UserEventStore } from '@infrastructure/eventstore/UserEventStore';
-import { LoanEventStore } from '@infrastructure/eventstore/LoanEventStore';
 
 const initialise = async () => {
   const container = new Container();
@@ -57,18 +56,11 @@ const initialise = async () => {
   // Initialise Redis
   const redisSubscriber: Redis = getRedisClient();
   const redis: Redis = getRedisClient();
-  await redisSubscriber.subscribe([
-    BookCreated.name,
-    UserCreated.name,
-    AuthorCreated.name,
-    BookAuthorChanged.name,
-    LoanCreated.name,
-    BookBorrowed.name,
-  ]);
+  await redisSubscriber.subscribe(['book', 'user', 'loan']);
 
   container.bind<Redis>(TYPES.RedisSubscriber).toConstantValue(redisSubscriber);
   container.bind<Redis>(TYPES.Redis).toConstantValue(redis);
-  container.bind<IEventBus>(TYPES.EventBus).to(EventBus);
+  container.bind<IEventBus>(TYPES.EventBus).to(RedisEventBus);
 
   // Read models for query
   container.bind<IBookReadModelFacade>(TYPES.BookReadModelFacade).to(BookReadModelFacade);
@@ -81,7 +73,7 @@ const initialise = async () => {
   container.bind<IEventHandler<UserCreated>>(TYPES.Event).to(AuthorCreatedEventHandler);
   container.bind<IEventHandler<BookCreated>>(TYPES.Event).to(BookCreatedEventHandler);
   container.bind<IEventHandler<BookBorrowed>>(TYPES.Event).to(BookBorrowedEventHandler);
-  
+
   // Prepare persistence components
   container.bind<Db>(TYPES.Db).toConstantValue(db);
   container.bind<IEventStore>(TYPES.EventStore).to(BookEventStore).whenTargetNamed(EVENT_STREAM_NAMES.Book);
@@ -90,27 +82,27 @@ const initialise = async () => {
   container.bind<IBookRepository>(TYPES.BookRepository).to(BookRepository);
   container.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository);
   container.bind<ILoanRepository>(TYPES.LoanRepository).to(LoanRepository);
-  
+
   // Register command handlers
   container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(CreateBookCommandHandler);
   container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(UpdateBookAuthorCommandHandler);
   container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(CreateUserCommandHandler);
   container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(CreateLoanCommandHandler);
   container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(MarkBookAsBorrowedCommandHandler);
-  
+
   // Create command bus
   const commandBus = new CommandBus();
-  
+
   // Register all the command handler here
   container.getAll<ICommandHandler<Command>[]>(TYPES.CommandHandler).forEach((handler: any) => {
     commandBus.registerHandler(handler.constructor.commandToHandle, handler);
   });
-  
+
   container.bind<CommandBus>(TYPES.CommandBus).toConstantValue(commandBus);
 
   // Event Handlers that depend on CommandBus
   container.bind<IEventHandler<LoanCreated>>(TYPES.Event).to(LoanCreatedEventHandler);
-  
+
   const server = new InversifyExpressServer(container);
 
   server.setConfig((app: Application) => {

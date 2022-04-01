@@ -1,6 +1,5 @@
 import { inject, injectable } from 'inversify';
 
-import { CreateBookCommand } from '@commands/book/CreateBook';
 import { MarkBookAsBorrowedCommand } from '@commands/book/MarkBookAsBorrowed';
 import { TYPES } from '@constants/types';
 import { ICommandHandler } from '@core/ICommandHandler';

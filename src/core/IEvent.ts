@@ -1,6 +1,7 @@
 import { IMessage } from './IMessage';
 
 export interface IEvent extends IMessage {
-  eventType?: string;
+  eventName: string;
+  aggregateName: string;
   version?: number;
 }
