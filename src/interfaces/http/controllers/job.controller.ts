@@ -16,7 +16,6 @@ export class JobController {
   async createJob(@request() req: Request, @response() res: Response) {
     const { title, description } = req.body;
     const result = await this._commandBus.send(new CreateJobCommand(title, description));
-    console.log(result);
     return res.json(ok('Created job successfully', result));
   }
 }
