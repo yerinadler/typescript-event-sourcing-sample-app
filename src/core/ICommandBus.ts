@@ -1,6 +1,7 @@
+import { ICommand } from './ICommand';
 import { ICommandHandler } from './ICommandHandler';
 
-export interface ICommandBus {
-  registerHandler<TCommand>(commandName: string, handler: ICommandHandler<TCommand>): void;
-  send<TCommand>(command: TCommand): void;
+export interface ICommandBus<BaseCommand extends ICommand = ICommand> {
+  registerHandler(handler: ICommandHandler<BaseCommand>): any;
+  send<T extends BaseCommand>(command: BaseCommand): any;
 }

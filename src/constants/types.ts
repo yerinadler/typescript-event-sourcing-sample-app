@@ -9,6 +9,8 @@ export const TYPES = {
   BookRepository: Symbol('BookRepository'),
   UserRepository: Symbol('UserRepository'),
   LoanRepository: Symbol('LoanRepository'),
+  ApplicationRepository: Symbol('ApplicationRepository'),
+  JobRepository: Symbol('JobRepository'),
 
   // Data Mappers
   BookDataMapper: Symbol('BookDataMapper'),
@@ -23,8 +25,14 @@ export const TYPES = {
   // Command Bus
   CommandBus: Symbol('CommandBus'),
 
+  // Query Bus
+  QueryBus: Symbol('QueryBus'),
+
   // Command Handlers
   CommandHandler: Symbol('CommandHandler'),
+
+  // Query Handlers
+  QueryHandler: Symbol('QueryHandler'),
 
   // Event
   Event: Symbol('Event'),
@@ -38,10 +46,15 @@ export const TYPES = {
   BookEventStore: Symbol('BookEventStore'),
   UserEventStore: Symbol('UserEventStore'),
   LoanEventStore: Symbol('LoanEventStore'),
+
+  // Query Handlers
+  GetAllApplicationsQueryHandler: Symbol('GetAllApplicationsQueryHandler'),
 };
 
 export const EVENT_STREAM_NAMES = {
   Book: Symbol('Book'),
   User: Symbol('User'),
   Loan: Symbol('Loan'),
+  Job: Symbol('Job'),
+  Application: Symbol('Application'),
 };
