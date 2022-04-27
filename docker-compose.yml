@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  mongodb:
+    container_name: cqrs-es-mongodb
+    image: mongo:4.4
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+  redis:
+    container_name: cqrs-es-redis
+    image: redis:6
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+networks:
+  default:
+    name: cqrs-es-net

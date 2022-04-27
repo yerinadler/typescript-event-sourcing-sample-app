@@ -39,7 +39,8 @@
     "mongodb": "^3.5.9",
     "nanoid": "^3.1.20",
     "reflect-metadata": "^0.1.13",
-    "uuid": "^8.2.0"
+    "uuid": "^8.2.0",
+    "winston": "^3.7.2"
   },
   "devDependencies": {
     "@types/node": "^16.10.3",
