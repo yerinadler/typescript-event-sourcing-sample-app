@@ -12,7 +12,7 @@ import { ApplicationCreatedEventHandler } from '@application/events/application/
 import { JobCreatedEventHandler } from '@application/events/job/handlers/job-created-handler';
 import { GetAllApplicationsQueryHandler } from '@application/queries/application/handlers/get-all-applications-query-handler';
 import config from '@config/main';
-import { EVENT_STREAM_NAMES, TYPES } from '@constants/types';
+import { EVENT_STREAM_NAMES, SUBSRIPTION_TOPICS, TYPES } from '@constants/types';
 import { ICommand } from '@core/ICommand';
 import { ICommandBus } from '@core/ICommandBus';
 import { ICommandHandler } from '@core/ICommandHandler';
@@ -46,7 +46,7 @@ const initialise = async () => {
   // Initialise Redis
   const redisSubscriber: Redis = getRedisClient();
   const redis: Redis = getRedisClient();
-  await redisSubscriber.subscribe(['job', 'application']);
+  await redisSubscriber.subscribe(SUBSRIPTION_TOPICS);
 
   container.bind<Redis>(TYPES.RedisSubscriber).toConstantValue(redisSubscriber);
   container.bind<Redis>(TYPES.Redis).toConstantValue(redis);
