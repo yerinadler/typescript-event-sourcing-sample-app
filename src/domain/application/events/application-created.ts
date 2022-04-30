@@ -12,6 +12,6 @@ export class ApplicationCreated extends Event {
     public email: string,
     public currentPosition: string
   ) {
-    super();
+    super(guid);
   }
 }

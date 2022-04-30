@@ -5,6 +5,6 @@ export class JobCreated extends Event {
   aggregateName = 'job';
 
   constructor(public guid: string, public title: string, public description: string) {
-    super();
+    super(guid);
   }
 }

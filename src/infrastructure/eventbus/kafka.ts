@@ -21,6 +21,7 @@ export class KafkaEventBus implements IEventBus {
       topic: channel,
       messages: [
         {
+          key: event.aggregateId,
           value: payload,
         },
       ],
