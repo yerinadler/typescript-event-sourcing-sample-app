@@ -4,6 +4,7 @@ import { Application, urlencoded, json } from 'express';
 import { Container } from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import { Redis } from 'ioredis';
+import { Consumer, Kafka, Producer } from 'kafkajs';
 import { Db } from 'mongodb';
 
 import { CreateApplicationCommandHandler } from '@application/commands/application/handlers/create-application-handler';
@@ -28,6 +29,7 @@ import { JobCreated } from '@domain/job/events/job-created';
 import { IJobRepository } from '@domain/job/job-repository.interface';
 import { CommandBus } from '@infrastructure/commandBus';
 import { createMongodbConnection } from '@infrastructure/db/mongodb';
+import { KafkaEventBus } from '@infrastructure/eventbus/kafka';
 import { RedisEventBus } from '@infrastructure/eventbus/redis';
 import { ApplicationEventStore } from '@infrastructure/eventstore/application-event-store';
 import { JobEventStore } from '@infrastructure/eventstore/job-event-store';
@@ -42,15 +44,28 @@ const initialise = async () => {
 
   // Module Registration
   const db: Db = await createMongodbConnection(config.MONGODB_URI);
+  const kafka = new Kafka({ brokers: config.KAFKA_BROKER_LIST.split(',') });
+  const kafkaProducer = kafka.producer();
+  const kafkaConsumer = kafka.consumer({ groupId: config.KAFKA_CONSUMER_GROUP_ID });
+
+  await kafkaProducer.connect();
+  await kafkaConsumer.connect();
+
+  for (const topic of SUBSRIPTION_TOPICS) {
+    await kafkaConsumer.subscribe({ topic });
+  }
+
+  // Prepare Messaging Engine
+  container.bind<Producer>(TYPES.KafkaProducer).toConstantValue(kafkaProducer);
+  container.bind<Consumer>(TYPES.KafkaConsumer).toConstantValue(kafkaConsumer);
 
   // Initialise Redis
   const redisSubscriber: Redis = getRedisClient();
   const redis: Redis = getRedisClient();
-  await redisSubscriber.subscribe(SUBSRIPTION_TOPICS);
 
   container.bind<Redis>(TYPES.RedisSubscriber).toConstantValue(redisSubscriber);
   container.bind<Redis>(TYPES.Redis).toConstantValue(redis);
-  container.bind<IEventBus>(TYPES.EventBus).to(RedisEventBus);
+  container.bind<IEventBus>(TYPES.EventBus).to(KafkaEventBus);
 
   // Event Handlers
   container.bind<IEventHandler<JobCreated>>(TYPES.Event).to(JobCreatedEventHandler);

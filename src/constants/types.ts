@@ -1,6 +1,8 @@
 export const TYPES = {
   // Dependencies
   Db: Symbol('Db'),
+  KafkaProducer: Symbol('KafkaProducer'),
+  KafkaConsumer: Symbol('KafkaConsumer'),
   RedisSubscriber: Symbol('RedisSubscriber'),
   Redis: Symbol('Redis'),
   EventBus: Symbol('EventBus'),
@@ -34,4 +36,4 @@ export const EVENT_STREAM_NAMES = {
   Application: Symbol('Application'),
 };
 
-export const SUBSRIPTION_TOPICS = ['Job', 'Application'];
+export const SUBSRIPTION_TOPICS = ['job', 'application'];
