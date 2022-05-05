@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Redis } from 'ioredis';
 
-import { TYPES } from '@constants/types';
+import { BASE_TYPES } from '@common/types';
 import { IQueryHandler } from '@core/IQueryHandler';
 
 import { GetAllApplicationsQuery } from '../definitions/get-all-applications-query';
@@ -10,7 +10,7 @@ import { GetAllApplicationsQuery } from '../definitions/get-all-applications-que
 export class GetAllApplicationsQueryHandler implements IQueryHandler<GetAllApplicationsQuery, any> {
   queryToHandle = GetAllApplicationsQuery.name;
 
-  constructor(@inject(TYPES.Redis) private readonly _redisClient: Redis) {}
+  constructor(@inject(BASE_TYPES.Redis) private readonly _redisClient: Redis) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async execute(query: GetAllApplicationsQuery) {

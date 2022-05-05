@@ -1,9 +1,9 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '@constants/types';
 import { ICommandHandler } from '@core/ICommandHandler';
-import { Job } from '@domain/job/job';
-import { IJobRepository } from '@domain/job/job-repository.interface';
+import { Job } from '@src/job/domain/job';
+import { IJobRepository } from '@src/job/domain/job-repository.interface';
+import { TYPES } from '@src/job/types';
 
 import { CreateJobCommand } from '../definitions/create-job';
 

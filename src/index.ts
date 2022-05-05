@@ -3,13 +3,14 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import 'reflect-metadata';
-import { TYPES } from '@constants/types';
+
+import { BASE_TYPES } from '@common/types';
 import { IEventBus } from '@core/IEventBus';
 
 import { initialise } from './startup';
 
 (async () => {
   const container = await initialise();
-  const baseEventHandler = container.get<IEventBus>(TYPES.EventBus);
+  const baseEventHandler = container.get<IEventBus>(BASE_TYPES.EventBus);
   baseEventHandler.subscribeEvents();
 })();

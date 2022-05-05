@@ -1,9 +1,9 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '@constants/types';
 import { ICommandHandler } from '@core/ICommandHandler';
-import { Application } from '@domain/application/application';
-import { IApplicationRepository } from '@domain/application/application-repository.interface';
+import { Application } from '@src/application/domain/application';
+import { IApplicationRepository } from '@src/application/domain/application-repository.interface';
+import { TYPES } from '@src/application/types';
 
 import { CreateApplicationCommand } from '../definitions/create-application';
 
