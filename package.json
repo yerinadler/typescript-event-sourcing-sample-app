@@ -10,15 +10,12 @@
     "lint": "eslint --fix ."
   },
   "_moduleAliases": {
+    "@src": "dist",
     "@core": "dist/core",
-    "@commandHandlers": "dist/application/commandHandlers",
-    "@eventHandlers": "dist/application/eventHandlers",
-    "@commands": "dist/commands",
-    "@projection": "dist/projection",
+    "@common": "dist/common",
     "@config": "dist/config",
     "@constants": "dist/constants",
     "@domain": "dist/domain",
-    "@application": "dist/application",
     "@infrastructure": "dist/infrastructure",
     "@interfaces": "dist/interfaces"
   },
