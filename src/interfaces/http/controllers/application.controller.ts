@@ -2,19 +2,19 @@ import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, request, response } from 'inversify-express-utils';
 
-import { CreateApplicationCommand } from '@application/commands/application/definitions/create-application';
-import { GetAllApplicationsQuery } from '@application/queries/application/definitions/get-all-applications-query';
-import { TYPES } from '@constants/types';
+import { BASE_TYPES } from '@common/types';
 import { ICommandBus } from '@core/ICommandBus';
 import { IQueryBus } from '@core/IQueryBus';
+import { CreateApplicationCommand } from '@src/application/application/commands/definitions/create-application';
+import { GetAllApplicationsQuery } from '@src/application/application/queries/definitions/get-all-applications-query';
 
 import { ok } from '../processors/response';
 
 @controller('/api/v1/applications')
 export class ApplicationController {
   constructor(
-    @inject(TYPES.CommandBus) private readonly _commandBus: ICommandBus,
-    @inject(TYPES.QueryBus) private readonly _queryBus: IQueryBus
+    @inject(BASE_TYPES.CommandBus) private readonly _commandBus: ICommandBus,
+    @inject(BASE_TYPES.QueryBus) private readonly _queryBus: IQueryBus
   ) {}
 
   @httpPost('')
