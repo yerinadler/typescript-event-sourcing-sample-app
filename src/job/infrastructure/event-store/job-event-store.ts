@@ -1,15 +1,17 @@
 import { inject, injectable } from 'inversify';
 import { Db } from 'mongodb';
 
-import { TYPES } from '@constants/types';
+import { BASE_TYPES } from '@common/types';
 import { IEventBus } from '@core/IEventBus';
 import { IEventStore } from '@core/IEventStore';
-
-import { EventStore } from '../../../infrastructure/eventstore';
+import { EventStore } from '@src/common/infrastructure/eventstore';
 
 @injectable()
 export class JobEventStore extends EventStore implements IEventStore {
-  constructor(@inject(TYPES.Db) private readonly db: Db, @inject(TYPES.EventBus) private readonly eventBus: IEventBus) {
+  constructor(
+    @inject(BASE_TYPES.Db) private readonly db: Db,
+    @inject(BASE_TYPES.EventBus) private readonly eventBus: IEventBus
+  ) {
     super(db.collection('job-events'), eventBus);
   }
 }
