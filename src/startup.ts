@@ -1,5 +1,6 @@
 import '@interfaces/http/controllers';
 
+import { CreateJobCommandHandler } from '@application/commands/job/handlers/create-job-handler';
 import { Application, urlencoded, json } from 'express';
 import { Container } from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
@@ -8,9 +9,7 @@ import { Consumer, Kafka, Producer } from 'kafkajs';
 import { Db } from 'mongodb';
 
 import { CreateApplicationCommandHandler } from '@application/commands/application/handlers/create-application-handler';
-import { CreateJobCommandHandler } from '@application/commands/job/handlers/create-job-handler';
 import { ApplicationCreatedEventHandler } from '@application/events/application/handlers/application-created-handler';
-import { JobCreatedEventHandler } from '@application/events/job/handlers/job-created-handler';
 import { GetAllApplicationsQueryHandler } from '@application/queries/application/handlers/get-all-applications-query-handler';
 import config from '@config/main';
 import { EVENT_STREAM_NAMES, SUBSRIPTION_TOPICS, TYPES } from '@constants/types';
@@ -31,12 +30,13 @@ import { CommandBus } from '@infrastructure/commandBus';
 import { createMongodbConnection } from '@infrastructure/db/mongodb';
 import { KafkaEventBus } from '@infrastructure/eventbus/kafka';
 import { ApplicationEventStore } from '@infrastructure/eventstore/application-event-store';
-import { JobEventStore } from '@infrastructure/eventstore/job-event-store';
 import { QueryBus } from '@infrastructure/query-bus';
 import { getRedisClient } from '@infrastructure/redis';
 import { ApplicationRepository } from '@infrastructure/repositories/application-repository';
-import { JobRepository } from '@infrastructure/repositories/job-repository';
 import { errorHandler } from '@interfaces/http/middlewares/error-handler';
+import { JobCreatedEventHandler } from 'job/application/events/handlers/job-created-handler';
+import { JobEventStore } from 'job/infrastructure/event-store/job-event-store';
+import { JobRepository } from 'job/infrastructure/repositories/job-repository';
 
 const initialise = async () => {
   const container = new Container();

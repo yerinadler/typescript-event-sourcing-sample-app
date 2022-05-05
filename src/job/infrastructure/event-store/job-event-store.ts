@@ -5,7 +5,7 @@ import { TYPES } from '@constants/types';
 import { IEventBus } from '@core/IEventBus';
 import { IEventStore } from '@core/IEventStore';
 
-import { EventStore } from '.';
+import { EventStore } from '../../../infrastructure/eventstore';
 
 @injectable()
 export class JobEventStore extends EventStore implements IEventStore {

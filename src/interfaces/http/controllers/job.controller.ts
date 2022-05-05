@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import { controller, httpPost, request, response } from 'inversify-express-utils';
 
-import { CreateJobCommand } from '@application/commands/job/definitions/create-job';
 import { TYPES } from '@constants/types';
 import { ICommandBus } from '@core/ICommandBus';
+import { CreateJobCommand } from 'job/application/commands/definitions/create-job';
 
 import { ok } from '../processors/response';
 
