@@ -4,104 +4,110 @@ import { Application, urlencoded, json } from 'express';
 import { Container } from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import { Redis } from 'ioredis';
+import { Consumer, Kafka, Producer } from 'kafkajs';
 import { Db } from 'mongodb';
 
-import { AuthorReadModelFacade, IAuthorReadModelFacade } from '@application/projection/author/ReadModel';
-import { BookReadModelFacade, IBookReadModelFacade } from '@application/projection/book/ReadModel';
-import { CreateBookCommandHandler } from '@commandHandlers/book/CreateBookCommandHandler';
-import { MarkBookAsBorrowedCommandHandler } from '@commandHandlers/book/MarkBookAsBorrowedCommandHandler';
-import { UpdateBookAuthorCommandHandler } from '@commandHandlers/book/UpdateBookAuthorCommandHandler';
-import { CreateLoanCommandHandler } from '@commandHandlers/loan/CreateLoanCommandHandler';
-import { CreateUserCommandHandler } from '@commandHandlers/user/CreateUserCommandHandler';
+import { CreateApplicationCommandHandler } from '@application/commands/application/handlers/create-application-handler';
+import { CreateJobCommandHandler } from '@application/commands/job/handlers/create-job-handler';
+import { ApplicationCreatedEventHandler } from '@application/events/application/handlers/application-created-handler';
+import { JobCreatedEventHandler } from '@application/events/job/handlers/job-created-handler';
+import { GetAllApplicationsQueryHandler } from '@application/queries/application/handlers/get-all-applications-query-handler';
 import config from '@config/main';
-import { EVENT_STREAM_NAMES, TYPES } from '@constants/types';
-import { Command } from '@core/Command';
+import { EVENT_STREAM_NAMES, SUBSRIPTION_TOPICS, TYPES } from '@constants/types';
+import { ICommand } from '@core/ICommand';
+import { ICommandBus } from '@core/ICommandBus';
 import { ICommandHandler } from '@core/ICommandHandler';
 import { IEventBus } from '@core/IEventBus';
 import { IEventHandler } from '@core/IEventHandler';
 import { IEventStore } from '@core/IEventStore';
-import { BookAuthorChanged } from '@domain/book/events/BookAuthorChanged';
-import { BookBorrowed } from '@domain/book/events/BookBorrowed';
-import { BookCreated } from '@domain/book/events/BookCreated';
-import { IBookRepository } from '@domain/book/IBookRepository';
-import { LoanCreated } from '@domain/loan/events/LoanCreated';
-import { ILoanRepository } from '@domain/loan/ILoanRepository';
-import { UserCreated } from '@domain/user/events/UserCreated';
-import { IUserRepository } from '@domain/user/IUserRepository';
-import { AuthorCreatedEventHandler } from '@eventHandlers/author/AuthorCreatedEventHandler';
-import { BookAuthorChangedEventHandler } from '@eventHandlers/book/BookAuthorChangedEventHandler';
-import { BookBorrowedEventHandler } from '@eventHandlers/book/BookBorrowedEventHandler';
-import { BookCreatedEventHandler } from '@eventHandlers/book/BookCreatedEventHandler';
-import { FakeNotificationEventHandler } from '@eventHandlers/book/FakeNotificationEventHandler';
-import { LoanCreatedEventHandler } from '@eventHandlers/loan/LoanCreatedEventHandler';
-import { UserCreatedEventHandler } from '@eventHandlers/user/UserCreatedEventHandler';
+import { IQuery } from '@core/IQuery';
+import { IQueryBus } from '@core/IQueryBus';
+import { IQueryHandler } from '@core/IQueryHandler';
+import { IApplicationRepository } from '@domain/application/application-repository.interface';
+import { ApplicationCreated } from '@domain/application/events/application-created';
+import { JobCreated } from '@domain/job/events/job-created';
+import { IJobRepository } from '@domain/job/job-repository.interface';
 import { CommandBus } from '@infrastructure/commandBus';
 import { createMongodbConnection } from '@infrastructure/db/mongodb';
-import { RedisEventBus } from '@infrastructure/eventbus/redis';
-import { BookEventStore } from '@infrastructure/eventstore/BookEventStore';
-import { LoanEventStore } from '@infrastructure/eventstore/LoanEventStore';
-import { UserEventStore } from '@infrastructure/eventstore/UserEventStore';
+import { KafkaEventBus } from '@infrastructure/eventbus/kafka';
+import { ApplicationEventStore } from '@infrastructure/eventstore/application-event-store';
+import { JobEventStore } from '@infrastructure/eventstore/job-event-store';
+import { QueryBus } from '@infrastructure/query-bus';
 import { getRedisClient } from '@infrastructure/redis';
-import { BookRepository } from '@infrastructure/repositories/BookRepository';
-import { LoanRepository } from '@infrastructure/repositories/LoanRepository';
-import { UserRepository } from '@infrastructure/repositories/UserRepository';
-import { errorHandler } from '@interfaces/http/middlewares/ErrorHandler';
+import { ApplicationRepository } from '@infrastructure/repositories/application-repository';
+import { JobRepository } from '@infrastructure/repositories/job-repository';
+import { errorHandler } from '@interfaces/http/middlewares/error-handler';
 
 const initialise = async () => {
   const container = new Container();
 
   // Module Registration
   const db: Db = await createMongodbConnection(config.MONGODB_URI);
+  const kafka = new Kafka({ brokers: config.KAFKA_BROKER_LIST.split(',') });
+  const kafkaProducer = kafka.producer();
+  const kafkaConsumer = kafka.consumer({ groupId: config.KAFKA_CONSUMER_GROUP_ID });
+
+  await kafkaProducer.connect();
+  await kafkaConsumer.connect();
+
+  for (const topic of SUBSRIPTION_TOPICS) {
+    await kafkaConsumer.subscribe({ topic });
+  }
+
+  // Prepare Messaging Engine
+  container.bind<Producer>(TYPES.KafkaProducer).toConstantValue(kafkaProducer);
+  container.bind<Consumer>(TYPES.KafkaConsumer).toConstantValue(kafkaConsumer);
 
   // Initialise Redis
   const redisSubscriber: Redis = getRedisClient();
   const redis: Redis = getRedisClient();
-  await redisSubscriber.subscribe(['book', 'user', 'loan']);
 
   container.bind<Redis>(TYPES.RedisSubscriber).toConstantValue(redisSubscriber);
   container.bind<Redis>(TYPES.Redis).toConstantValue(redis);
-  container.bind<IEventBus>(TYPES.EventBus).to(RedisEventBus);
-
-  // Read models for query
-  container.bind<IBookReadModelFacade>(TYPES.BookReadModelFacade).to(BookReadModelFacade);
-  container.bind<IAuthorReadModelFacade>(TYPES.AuthorReadModelFacade).to(AuthorReadModelFacade);
+  container.bind<IEventBus>(TYPES.EventBus).to(KafkaEventBus);
 
   // Event Handlers
-  container.bind<IEventHandler<BookCreated>>(TYPES.Event).to(FakeNotificationEventHandler);
-  container.bind<IEventHandler<BookAuthorChanged>>(TYPES.Event).to(BookAuthorChangedEventHandler);
-  container.bind<IEventHandler<UserCreated>>(TYPES.Event).to(UserCreatedEventHandler);
-  container.bind<IEventHandler<UserCreated>>(TYPES.Event).to(AuthorCreatedEventHandler);
-  container.bind<IEventHandler<BookCreated>>(TYPES.Event).to(BookCreatedEventHandler);
-  container.bind<IEventHandler<BookBorrowed>>(TYPES.Event).to(BookBorrowedEventHandler);
+  container.bind<IEventHandler<JobCreated>>(TYPES.Event).to(JobCreatedEventHandler);
+  container.bind<IEventHandler<ApplicationCreated>>(TYPES.Event).to(ApplicationCreatedEventHandler);
 
   // Prepare persistence components
   container.bind<Db>(TYPES.Db).toConstantValue(db);
-  container.bind<IEventStore>(TYPES.EventStore).to(BookEventStore).whenTargetNamed(EVENT_STREAM_NAMES.Book);
-  container.bind<IEventStore>(TYPES.EventStore).to(UserEventStore).whenTargetNamed(EVENT_STREAM_NAMES.User);
-  container.bind<IEventStore>(TYPES.EventStore).to(LoanEventStore).whenTargetNamed(EVENT_STREAM_NAMES.Loan);
-  container.bind<IBookRepository>(TYPES.BookRepository).to(BookRepository);
-  container.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository);
-  container.bind<ILoanRepository>(TYPES.LoanRepository).to(LoanRepository);
+  container
+    .bind<IEventStore>(TYPES.EventStore)
+    .to(ApplicationEventStore)
+    .whenTargetNamed(EVENT_STREAM_NAMES.Application);
+  container.bind<IEventStore>(TYPES.EventStore).to(JobEventStore).whenTargetNamed(EVENT_STREAM_NAMES.Job);
+  container.bind<IApplicationRepository>(TYPES.ApplicationRepository).to(ApplicationRepository);
+  container.bind<IJobRepository>(TYPES.JobRepository).to(JobRepository);
 
   // Register command handlers
-  container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(CreateBookCommandHandler);
-  container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(UpdateBookAuthorCommandHandler);
-  container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(CreateUserCommandHandler);
-  container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(CreateLoanCommandHandler);
-  container.bind<ICommandHandler<Command>>(TYPES.CommandHandler).to(MarkBookAsBorrowedCommandHandler);
+  container.bind<ICommandHandler<ICommand>>(TYPES.CommandHandler).to(CreateJobCommandHandler);
+  container.bind<ICommandHandler<ICommand>>(TYPES.CommandHandler).to(CreateApplicationCommandHandler);
 
   // Create command bus
-  const commandBus = new CommandBus();
+  const commandBus: ICommandBus<ICommand> = new CommandBus();
 
-  // Register all the command handler here
-  container.getAll<ICommandHandler<Command>[]>(TYPES.CommandHandler).forEach((handler: any) => {
-    commandBus.registerHandler(handler.constructor.commandToHandle, handler);
+  // Register all command handlers
+  container.getAll<ICommandHandler<ICommand>>(TYPES.CommandHandler).forEach((handler: ICommandHandler<ICommand>) => {
+    commandBus.registerHandler(handler);
   });
 
-  container.bind<CommandBus>(TYPES.CommandBus).toConstantValue(commandBus);
+  container.bind<ICommandBus<ICommand>>(TYPES.CommandBus).toConstantValue(commandBus);
+
+  // Register query handlers
+  container.bind<IQueryHandler<IQuery>>(TYPES.QueryHandler).to(GetAllApplicationsQueryHandler);
+
+  // Create Query Bus
+  const queryBus: IQueryBus<IQuery> = new QueryBus();
+
+  // Register all query handlers
+  container.getAll<IQueryHandler<IQuery>>(TYPES.QueryHandler).forEach((handler: IQueryHandler<IQuery>) => {
+    queryBus.registerHandler(handler);
+  });
+
+  container.bind<IQueryBus<IQuery>>(TYPES.QueryBus).toConstantValue(queryBus);
 
   // Event Handlers that depend on CommandBus
-  container.bind<IEventHandler<LoanCreated>>(TYPES.Event).to(LoanCreatedEventHandler);
 
   const server = new InversifyExpressServer(container);
 

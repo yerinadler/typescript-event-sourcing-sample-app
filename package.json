@@ -35,11 +35,13 @@
     "inversify": "^5.0.1",
     "inversify-express-utils": "^6.3.2",
     "ioredis": "^4.19.2",
+    "kafkajs": "^1.16.0",
     "module-alias": "^2.2.2",
     "mongodb": "^3.5.9",
     "nanoid": "^3.1.20",
     "reflect-metadata": "^0.1.13",
-    "uuid": "^8.2.0"
+    "uuid": "^8.2.0",
+    "winston": "^3.7.2"
   },
   "devDependencies": {
     "@types/node": "^16.10.3",

@@ -1,4 +1,3 @@
-export * from './CommonController';
-export * from './BookController';
-export * from './UserController';
-export * from './LoanController';
+export * from './common-controller';
+export * from './application.controller';
+export * from './job.controller';
