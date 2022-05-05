@@ -30,7 +30,6 @@ import { IJobRepository } from '@domain/job/job-repository.interface';
 import { CommandBus } from '@infrastructure/commandBus';
 import { createMongodbConnection } from '@infrastructure/db/mongodb';
 import { KafkaEventBus } from '@infrastructure/eventbus/kafka';
-import { RedisEventBus } from '@infrastructure/eventbus/redis';
 import { ApplicationEventStore } from '@infrastructure/eventstore/application-event-store';
 import { JobEventStore } from '@infrastructure/eventstore/job-event-store';
 import { QueryBus } from '@infrastructure/query-bus';
