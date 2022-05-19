@@ -1,11 +1,9 @@
+import { IEvent, IEventBus, IEventHandler } from '@ayerin/ddd-base';
 import { classToPlain } from 'class-transformer';
 import { injectable, inject, multiInject } from 'inversify';
 import { Redis } from 'ioredis';
 
 import { BASE_TYPES } from '@common/types';
-import { IEvent } from '@core/IEvent';
-import { IEventBus } from '@core/IEventBus';
-import { IEventHandler } from '@core/IEventHandler';
 
 @injectable()
 export class RedisEventBus implements IEventBus {

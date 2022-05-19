@@ -1,9 +1,9 @@
+import { ICommandBus } from '@ayerin/ddd-base';
 import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import { controller, httpPost, request, response } from 'inversify-express-utils';
 
 import { BASE_TYPES } from '@common/types';
-import { ICommandBus } from '@core/ICommandBus';
 import { CreateJobCommand } from '@src/job/application/commands/definitions/create-job';
 
 import { ok } from '../processors/response';

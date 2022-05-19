@@ -1,11 +1,13 @@
+import {
+  ConcurrencyException,
+  NotFoundException,
+  EventDescriptor,
+  IEvent,
+  IEventBus,
+  IEventStore,
+} from '@ayerin/ddd-base';
 import { injectable, unmanaged } from 'inversify';
 import { Collection } from 'mongodb';
-
-import { ConcurrencyException, NotFoundException } from '@core/ApplicationError';
-import { EventDescriptor } from '@core/EventDescriptor';
-import { IEvent } from '@core/IEvent';
-import { IEventBus } from '@core/IEventBus';
-import { IEventStore } from '@core/IEventStore';
 
 @injectable()
 export abstract class EventStore implements IEventStore {

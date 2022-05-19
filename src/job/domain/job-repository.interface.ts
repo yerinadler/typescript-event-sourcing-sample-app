@@ -1,5 +1,5 @@
-import { IRepository } from '@core/IRepository';
+import { IEventSourcedRepository } from '@ayerin/ddd-base';
 
 import { Job } from './job';
 
-export interface IJobRepository extends IRepository<Job> {}
+export interface IJobRepository extends IEventSourcedRepository<Job> {}

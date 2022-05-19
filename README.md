@@ -30,7 +30,7 @@ The only source of truth of Event Sourcing systems is the `event store` while th
 
 In this example, we use `MongoDB` as an event store and `Redis` as the read store.
 
-The commands are sent by the frontend to the `commandBus` which then selects appropriate `command handlers` for the commands. The command handlers then prepare the `Aggregate Root` and apply the business logic suitable for them. If the commands succeed, they result in events which will then be sent to the `eventBus` to the `event handlers`. In this example, the eventBus is implemented using `Redis Pub/Sub`.
+The commands are sent by the frontend to the `commandBus` which then selects appropriate `command handlers` for the commands. The command handlers then prepare the `Aggregate Root` and apply the business logic suitable for them. If the commands succeed, they result in events which will then be sent to the `eventBus` to the `event handlers`. In this example, the eventBus is implemented using `Apache Kafka`.
 
 To read more about CQRS and Event Sourcing. Please check [this link](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
 

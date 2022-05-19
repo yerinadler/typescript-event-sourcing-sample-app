@@ -1,10 +1,7 @@
+import { AggregateRoot, IEventSourcedRepository, IEventStore } from '@ayerin/ddd-base';
 import { injectable, unmanaged } from 'inversify';
-
-import { AggregateRoot } from '@core/AggregateRoot';
-import { IEventStore } from '@core/IEventStore';
-import { IRepository } from '@core/IRepository';
 @injectable()
-export class Repository<T extends AggregateRoot> implements IRepository<T> {
+export class Repository<T extends AggregateRoot> implements IEventSourcedRepository<T> {
   constructor(
     @unmanaged() private readonly eventStore: IEventStore,
     @unmanaged() private readonly Type: { new (): T }

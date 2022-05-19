@@ -1,4 +1,4 @@
-import { AggregateRoot } from '@core/AggregateRoot';
+import { AggregateRoot } from '@ayerin/ddd-base';
 
 import { JobCreated } from './events/job-created';
 

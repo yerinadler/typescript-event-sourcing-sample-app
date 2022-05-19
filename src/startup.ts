@@ -1,4 +1,5 @@
 import '@interfaces/http/controllers';
+import { ICommand, ICommandBus, ICommandHandler, IQuery, IQueryBus, IQueryHandler } from '@ayerin/ddd-base';
 import { Application, urlencoded, json } from 'express';
 import { Container } from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
@@ -10,12 +11,6 @@ import { commonContainerModule } from '@src/common/module';
 import { jobContainerModule } from '@src/job/module';
 
 import { BASE_TYPES } from './common/types';
-import { ICommand } from './core/ICommand';
-import { ICommandBus } from './core/ICommandBus';
-import { ICommandHandler } from './core/ICommandHandler';
-import { IQuery } from './core/IQuery';
-import { IQueryBus } from './core/IQueryBus';
-import { IQueryHandler } from './core/IQueryHandler';
 
 const initialise = async () => {
   const container = new Container();

@@ -1,8 +1,5 @@
+import { ICommand, ICommandBus, ICommandHandler } from '@ayerin/ddd-base';
 import { injectable } from 'inversify';
-
-import { ICommand } from '@core/ICommand';
-import { ICommandBus } from '@core/ICommandBus';
-import { ICommandHandler } from '@core/ICommandHandler';
 
 @injectable()
 export class CommandBus<BaseCommand extends ICommand = ICommand> implements ICommandBus<BaseCommand> {

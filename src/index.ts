@@ -5,7 +5,9 @@ dotenv.config();
 import 'reflect-metadata';
 
 import { BASE_TYPES } from '@common/types';
-import { IEventBus } from '@core/IEventBus';
+
+// eslint-disable-next-line import/order
+import { IEventBus } from '@ayerin/ddd-base';
 
 import { initialise } from './startup';
 

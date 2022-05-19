@@ -1,9 +1,7 @@
+import { ICommand, ICommandHandler, IEventHandler } from '@ayerin/ddd-base';
 import { ContainerModule, interfaces } from 'inversify';
 
 import { BASE_TYPES } from '@common/types';
-import { ICommand } from '@core/ICommand';
-import { ICommandHandler } from '@core/ICommandHandler';
-import { IEventHandler } from '@core/IEventHandler';
 
 import { CreateJobCommandHandler } from './application/commands/handlers/create-job-handler';
 import { JobCreatedEventHandler } from './application/events/handlers/job-created-handler';

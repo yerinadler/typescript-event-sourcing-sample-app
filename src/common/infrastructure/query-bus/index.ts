@@ -1,8 +1,5 @@
+import { IQuery, IQueryBus, IQueryHandler } from '@ayerin/ddd-base';
 import { injectable } from 'inversify';
-
-import { IQuery } from '@core/IQuery';
-import { IQueryBus } from '@core/IQueryBus';
-import { IQueryHandler } from '@core/IQueryHandler';
 
 @injectable()
 export class QueryBus<BaseQuery extends IQuery = IQuery> implements IQueryBus<BaseQuery> {

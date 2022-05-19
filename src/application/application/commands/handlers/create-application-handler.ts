@@ -1,6 +1,6 @@
+import { ICommandHandler } from '@ayerin/ddd-base';
 import { inject, injectable } from 'inversify';
 
-import { ICommandHandler } from '@core/ICommandHandler';
 import { Application } from '@src/application/domain/application';
 import { IApplicationRepository } from '@src/application/domain/application-repository.interface';
 import { TYPES } from '@src/application/types';

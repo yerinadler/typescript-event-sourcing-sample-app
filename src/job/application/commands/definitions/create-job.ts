@@ -1,4 +1,4 @@
-import { Command } from '@core/Command';
+import { Command } from '@ayerin/ddd-base';
 
 export class CreateJobCommand extends Command {
   public title: string;

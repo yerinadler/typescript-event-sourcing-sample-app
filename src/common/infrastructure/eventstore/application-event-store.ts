@@ -1,9 +1,8 @@
+import { IEventBus, IEventStore } from '@ayerin/ddd-base';
 import { inject, injectable } from 'inversify';
 import { Db } from 'mongodb';
 
 import { BASE_TYPES } from '@common/types';
-import { IEventBus } from '@core/IEventBus';
-import { IEventStore } from '@core/IEventStore';
 
 import { EventStore } from '.';
 

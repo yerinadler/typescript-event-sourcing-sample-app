@@ -1,6 +1,6 @@
+import { ICommandHandler } from '@ayerin/ddd-base';
 import { inject, injectable } from 'inversify';
 
-import { ICommandHandler } from '@core/ICommandHandler';
 import { Job } from '@src/job/domain/job';
 import { IJobRepository } from '@src/job/domain/job-repository.interface';
 import { TYPES } from '@src/job/types';

@@ -1,7 +1,7 @@
+import { IEventStore } from '@ayerin/ddd-base';
 import { inject, injectable, named } from 'inversify';
 
 import { EVENT_STREAM_NAMES, BASE_TYPES } from '@common/types';
-import { IEventStore } from '@core/IEventStore';
 import { Repository } from '@src/common/infrastructure/repositories/repository';
 
 import { Application } from '../../domain/application';

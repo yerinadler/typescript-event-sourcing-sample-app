@@ -1,3 +1,3 @@
-import { IQuery } from '@core/IQuery';
+import { IQuery } from '@ayerin/ddd-base';
 
 export class GetAllApplicationsQuery implements IQuery {}
