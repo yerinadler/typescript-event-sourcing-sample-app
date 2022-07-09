@@ -5,7 +5,7 @@ dotenv.config();
 import 'reflect-metadata';
 
 import { BASE_TYPES } from '@common/types';
-import { IEventBus } from '@core/IEventBus';
+import { IEventBus } from '@cqrs-es/core/IEventBus';
 
 import { initialise } from './startup';
 
