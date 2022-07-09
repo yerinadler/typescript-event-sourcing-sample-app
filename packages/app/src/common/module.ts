@@ -1,15 +1,14 @@
-import { AsyncContainerModule, interfaces } from 'inversify';
-import { Redis } from 'ioredis';
-import { Kafka, Producer, Consumer } from 'kafkajs';
-import { Db } from 'mongodb';
-
 import config from '@config/main';
-import { ICommandBus } from '@core/ICommandBus';
 import { IEventBus } from '@core/IEventBus';
 import { IEventStore } from '@core/IEventStore';
 import { IQuery } from '@core/IQuery';
 import { IQueryBus } from '@core/IQueryBus';
 import { JobEventStore } from '@src/job/infrastructure/event-store/job-event-store';
+import { ICommandBus } from 'core/ICommandBus';
+import { AsyncContainerModule, interfaces } from 'inversify';
+import { Redis } from 'ioredis';
+import { Kafka, Producer, Consumer } from 'kafkajs';
+import { Db } from 'mongodb';
 
 import { CommandBus } from './infrastructure/commandBus';
 import { createMongodbConnection } from './infrastructure/db/mongodb';

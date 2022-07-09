@@ -1,16 +1,16 @@
 import '@interfaces/http/controllers';
-import { Application, urlencoded, json } from 'express';
-import { Container } from 'inversify';
-import { InversifyExpressServer } from 'inversify-express-utils';
 
 import config from '@config/main';
+import { ICommand } from '@cqrs-es/core/ICommand';
 import { errorHandler } from '@interfaces/http/middlewares/error-handler';
 import { applicationContainerModule } from '@src/application/module';
 import { commonContainerModule } from '@src/common/module';
 import { jobContainerModule } from '@src/job/module';
+import { Application, urlencoded, json } from 'express';
+import { Container } from 'inversify';
+import { InversifyExpressServer } from 'inversify-express-utils';
 
 import { BASE_TYPES } from './common/types';
-import { ICommand } from './core/ICommand';
 import { ICommandBus } from './core/ICommandBus';
 import { ICommandHandler } from './core/ICommandHandler';
 import { IQuery } from './core/IQuery';
