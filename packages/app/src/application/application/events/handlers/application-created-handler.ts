@@ -1,11 +1,9 @@
-import { BASE_TYPES } from '@common/types';
 import { IEventHandler } from '@cqrs-es/core';
-
-// import { ApplicationCreated } from '@s /application/domain/events/application-created';
 import { inject, injectable } from 'inversify';
 import { Redis } from 'ioredis';
 
-import { ApplicationCreated } from '../../../domain/events/application-created';
+import { BASE_TYPES } from '@common/types';
+import { ApplicationCreated } from '@src/application/domain/events/application-created';
 
 @injectable()
 export class ApplicationCreatedEventHandler implements IEventHandler<ApplicationCreated> {
