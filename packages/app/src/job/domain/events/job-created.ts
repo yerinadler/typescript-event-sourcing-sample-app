@@ -1,4 +1,4 @@
-import { Event } from '@core/Event';
+import { Event } from '@cqrs-es/core';
 
 export class JobCreated extends Event {
   eventName = JobCreated.name;

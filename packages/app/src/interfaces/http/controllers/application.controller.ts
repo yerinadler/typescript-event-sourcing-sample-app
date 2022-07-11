@@ -3,8 +3,8 @@ import { inject } from 'inversify';
 import { controller, httpGet, httpPost, request, response } from 'inversify-express-utils';
 
 import { BASE_TYPES } from '@common/types';
-import { ICommandBus } from '@core/ICommandBus';
-import { IQueryBus } from '@core/IQueryBus';
+import { ICommandBus } from '@cqrs-es/core';
+import { IQueryBus } from '@cqrs-es/core';
 import { CreateApplicationCommand } from '@src/application/application/commands/definitions/create-application';
 import { GetAllApplicationsQuery } from '@src/application/application/queries/definitions/get-all-applications-query';
 

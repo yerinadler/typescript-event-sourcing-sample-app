@@ -1,11 +1,7 @@
+import { ICommand, ICommandHandler, IEventHandler, IQuery, IQueryHandler } from '@cqrs-es/core';
 import { ContainerModule, interfaces } from 'inversify';
 
 import { BASE_TYPES } from '@common/types';
-import { ICommand } from '@core/ICommand';
-import { ICommandHandler } from '@core/ICommandHandler';
-import { IEventHandler } from '@core/IEventHandler';
-import { IQuery } from '@core/IQuery';
-import { IQueryHandler } from '@core/IQueryHandler';
 
 import { CreateApplicationCommandHandler } from './application/commands/handlers/create-application-handler';
 import { ApplicationCreatedEventHandler } from './application/events/handlers/application-created-handler';

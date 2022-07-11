@@ -1,4 +1,4 @@
-import { IRepository } from '@core/IRepository';
+import { IRepository } from '@cqrs-es/core';
 
 import { Job } from './job';
 

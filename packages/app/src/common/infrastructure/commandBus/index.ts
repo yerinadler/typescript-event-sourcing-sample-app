@@ -1,6 +1,4 @@
-import { ICommand } from '@cqrs-es/ICommand';
-import { ICommandBus } from '@cqrs-es/ICommandBus';
-import { ICommandHandler } from '@cqrs-es/ICommandHandler';
+import { ICommand, ICommandBus, ICommandHandler } from '@cqrs-es/core';
 import { injectable } from 'inversify';
 
 @injectable()

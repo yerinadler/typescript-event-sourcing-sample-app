@@ -1,4 +1,4 @@
-import { Command } from '@core/Command';
+import { Command } from '@cqrs-es/core';
 
 export class CreateJobCommand extends Command {
   public title: string;

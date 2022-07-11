@@ -1,13 +1,13 @@
-import 'module-alias/register';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 import 'reflect-metadata';
 
-import { BASE_TYPES } from '@common/types';
-import { IEventBus } from '@cqrs-es/core/IEventBus';
-
+import { BASE_TYPES } from './common/types';
 import { initialise } from './startup';
+
+// eslint-disable-next-line import/order
+import { IEventBus } from '@cqrs-es/core';
 
 (async () => {
   const container = await initialise();
