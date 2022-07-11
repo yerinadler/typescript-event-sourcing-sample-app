@@ -1,4 +1,4 @@
-import { AggregateRoot } from '@core/AggregateRoot';
+import { AggregateRoot } from '@cqrs-es/core';
 
 import { ApplicationCreated } from './events/application-created';
 

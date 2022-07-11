@@ -1,8 +1,5 @@
+import { AggregateRoot, IEventStore, IRepository } from '@cqrs-es/core';
 import { injectable, unmanaged } from 'inversify';
-
-import { AggregateRoot } from '@core/AggregateRoot';
-import { IEventStore } from '@core/IEventStore';
-import { IRepository } from '@core/IRepository';
 @injectable()
 export class Repository<T extends AggregateRoot> implements IRepository<T> {
   constructor(

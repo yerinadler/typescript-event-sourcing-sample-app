@@ -1,8 +1,8 @@
+import { IQueryHandler } from '@cqrs-es/core';
 import { inject, injectable } from 'inversify';
 import { Redis } from 'ioredis';
 
 import { BASE_TYPES } from '@common/types';
-import { IQueryHandler } from '@core/IQueryHandler';
 
 import { GetAllApplicationsQuery } from '../definitions/get-all-applications-query';
 

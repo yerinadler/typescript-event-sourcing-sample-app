@@ -1,4 +1,4 @@
-import { AggregateRoot } from '@core/AggregateRoot';
+import { AggregateRoot } from '@cqrs-es/core';
 
 import { JobCreated } from './events/job-created';
 

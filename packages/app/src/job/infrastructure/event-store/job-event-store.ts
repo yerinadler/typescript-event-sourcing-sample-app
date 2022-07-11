@@ -2,8 +2,8 @@ import { inject, injectable } from 'inversify';
 import { Db } from 'mongodb';
 
 import { BASE_TYPES } from '@common/types';
-import { IEventBus } from '@core/IEventBus';
-import { IEventStore } from '@core/IEventStore';
+import { IEventBus } from '@cqrs-es/core';
+import { IEventStore } from '@cqrs-es/core';
 import { EventStore } from '@src/common/infrastructure/eventstore';
 
 @injectable()

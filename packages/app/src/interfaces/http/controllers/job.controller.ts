@@ -3,7 +3,7 @@ import { inject } from 'inversify';
 import { controller, httpPost, request, response } from 'inversify-express-utils';
 
 import { BASE_TYPES } from '@common/types';
-import { ICommandBus } from '@core/ICommandBus';
+import { ICommandBus } from '@cqrs-es/core';
 import { CreateJobCommand } from '@src/job/application/commands/definitions/create-job';
 
 import { ok } from '../processors/response';

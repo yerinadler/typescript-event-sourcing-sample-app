@@ -10,14 +10,14 @@
     "lint": "eslint --fix ."
   },
   "_moduleAliases": {
-    "@src": "dist",
-    "@core": "dist/core",
-    "@common": "dist/common",
-    "@config": "dist/config",
+    "@src": "./dist",
+    "@core": "./dist/core",
+    "@common": "./dist/common",
+    "@config": "./dist/config",
     "@constants": "dist/constants",
     "@domain": "dist/domain",
     "@infrastructure": "dist/infrastructure",
-    "@interfaces": "dist/interfaces"
+    "@interfaces": "./dist/interfaces"
   },
   "dependencies": {
     "@cqrs-es/core": "1.0.0",
@@ -52,6 +52,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.4.1",
+    "tsconfig-paths": "^4.0.0",
     "typescript": "^4.7.4"
   }
 }

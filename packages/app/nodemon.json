@@ -1,0 +1,5 @@
+{
+  "watch": ["src/**/*.ts"],
+  "ext": "ts",
+  "exec": "rm -rf dist && tsc --build --force && node dist/index.js"
+}
