@@ -1,10 +1,10 @@
 import {
-  ConcurrencyException,
-  NotFoundException,
-  EventDescriptor,
-  IEvent,
-  IEventBus,
   IEventStore,
+  IEventBus,
+  IEvent,
+  ConcurrencyException,
+  EventDescriptor,
+  NotFoundException,
 } from '@cqrs-es/core';
 import { injectable, unmanaged } from 'inversify';
 import { Collection } from 'mongodb';
