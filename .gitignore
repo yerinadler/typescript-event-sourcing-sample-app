@@ -3,3 +3,4 @@ dist
 .env
 .vscode
 yarn-error.log
+tsconfig.tsbuildinfo
