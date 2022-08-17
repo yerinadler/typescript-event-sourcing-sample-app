@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+  mongodb:
+    container_name: cqrs-es-mongodb
+    image: mongo:4.4
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+  redis:
+    container_name: cqrs-es-redis
+    image: redis:6
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+  zookeeper:
+    container_name: cqrs-es-zookeeper
+    image: wurstmeister/zookeeper:latest
+    restart: unless-stopped
+    ports:
+      - 2181:2181
+  kafka:
+    container_name: cqrs-es-kafka
+    image: wurstmeister/kafka:2.11-1.1.1
+    restart: unless-stopped
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
+      KAFKA_CREATE_TOPICS: "application:1:1,job:1:1"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+networks:
+  default:
+    name: cqrs-es-net
