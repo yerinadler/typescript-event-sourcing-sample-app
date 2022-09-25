@@ -31,7 +31,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_DELETE_TOPIC_ENABLE: 'true'
-      KAFKA_CREATE_TOPICS: "application.dev:1:1,job.dev:1:1"
+      KAFKA_CREATE_TOPICS: "application:1:1,job:1:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 networks:
