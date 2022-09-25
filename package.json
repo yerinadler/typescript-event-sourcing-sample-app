@@ -6,7 +6,8 @@
     "packages/*"
   ],
   "scripts": {
-    "app": "yarn workspace @cqrs-es/app",
+    "application": "yarn workspace @cqrs-es/application",
+    "job": "yarn workspace @cqrs-es/job",
     "core": "yarn workspace @cqrs-es/core"
   },
   "main": "index.js",
