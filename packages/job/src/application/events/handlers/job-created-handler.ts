@@ -18,6 +18,7 @@ export class JobCreatedEventHandler implements IEventHandler<JobCreated> {
         guid: event.guid,
         title: event.title,
         description: event.description,
+        status: event.status,
         version: event.version,
       })
     );
