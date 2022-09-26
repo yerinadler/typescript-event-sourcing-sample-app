@@ -1,8 +1,7 @@
 import { IQueryHandler } from '@cqrs-es/core';
+import { TYPES } from '@src/types';
 import { inject, injectable } from 'inversify';
 import { Redis } from 'ioredis';
-
-import { TYPES } from '@src/types';
 
 import { GetAllJobsQuery } from '../definitions/get-all-jobs-query';
 

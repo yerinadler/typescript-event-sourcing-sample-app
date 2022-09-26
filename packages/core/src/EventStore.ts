@@ -1,10 +1,11 @@
+import { injectable, unmanaged } from 'inversify';
+import { Collection } from 'mongodb';
+
 import { ConcurrencyException, NotFoundException } from './Errors';
 import { EventDescriptor } from './EventDescriptor';
 import { IEvent } from './interfaces/IEvent';
 import { IEventBus } from './interfaces/IEventBus';
 import { IEventStore } from './interfaces/IEventStore';
-import { injectable, unmanaged } from 'inversify';
-import { Collection } from 'mongodb';
 
 @injectable()
 export abstract class EventStore implements IEventStore {

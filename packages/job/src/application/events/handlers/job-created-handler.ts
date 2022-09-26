@@ -1,8 +1,8 @@
 import { IEventHandler } from '@cqrs-es/core';
+import { TYPES } from '@src/types';
 import { inject, injectable } from 'inversify';
 import { Redis } from 'ioredis';
 
-import { TYPES } from '@src/types';
 import { JobCreated } from '@src/domain/events/job-created';
 
 @injectable()

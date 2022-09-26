@@ -1,4 +1,4 @@
-import { IEvent } from "interfaces/IEvent";
+import { IEvent } from './interfaces/IEvent';
 
 export abstract class Event implements IEvent {
   public abstract eventName: string;

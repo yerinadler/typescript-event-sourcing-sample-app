@@ -1,12 +1,11 @@
+import { ICommandBus, IQueryBus } from '@cqrs-es/core';
 import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, request, response } from 'inversify-express-utils';
 
-import { TYPES } from '@src/types';
-import { ICommandBus } from '@cqrs-es/core';
-import { IQueryBus } from '@cqrs-es/core';
 import { CreateApplicationCommand } from '@src/application/commands/definitions/create-application';
 import { GetAllApplicationsQuery } from '@src/application/queries/definitions/get-all-applications-query';
+import { TYPES } from '@src/types';
 
 import { ok } from '../processors/response';
 

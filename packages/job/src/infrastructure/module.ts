@@ -1,22 +1,24 @@
-import { ICommandBus, IEventBus, IEventStore, IQuery, IQueryBus } from "@cqrs-es/core";
-import { TYPES } from "@src/types";
-import { AsyncContainerModule, interfaces } from "inversify";
-import { createMongodbConnection } from "./db/mongodb";
 import config from '@config/main';
-import { Db } from "mongodb";
-import { Consumer, Kafka, Producer } from "kafkajs";
-import { KafkaEventBus } from "./eventbus/kafka";
-import { CommandBus } from "./commandBus";
-import { QueryBus } from "./query-bus";
-import { JobEventStore } from "./event-store/job-event-store";
-import { IJobEventStore } from "@src/domain/job-event-store.interface";
-import { IJobRepository } from "@src/domain/job-repository.interface";
-import { JobRepository } from "./repositories/job-repository";
-import RedisClient, { Redis } from "ioredis";
+import { ICommandBus, IEventBus, IQuery, IQueryBus } from '@cqrs-es/core';
+import { TYPES } from '@src/types';
+import { AsyncContainerModule, interfaces } from 'inversify';
+import RedisClient, { Redis } from 'ioredis';
+import { Consumer, Kafka, Producer } from 'kafkajs';
+import { Db } from 'mongodb';
+
+import { IJobEventStore } from '@src/domain/job-event-store.interface';
+import { IJobRepository } from '@src/domain/job-repository.interface';
+
+import { CommandBus } from './commandBus';
+import { createMongodbConnection } from './db/mongodb';
+import { JobEventStore } from './event-store/job-event-store';
+import { KafkaEventBus } from './eventbus/kafka';
+import { QueryBus } from './query-bus';
+import { JobRepository } from './repositories/job-repository';
 
 export const infrastructureModule = new AsyncContainerModule(async (bind: interfaces.Bind) => {
   const db: Db = await createMongodbConnection(config.MONGODB_URI);
-  
+
   const kafka = new Kafka({ brokers: config.KAFKA_BROKER_LIST.split(',') });
   const kafkaProducer = kafka.producer();
   const kafkaConsumer = kafka.consumer({ groupId: config.KAFKA_CONSUMER_GROUP_ID });

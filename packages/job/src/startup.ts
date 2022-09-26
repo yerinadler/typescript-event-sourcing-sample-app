@@ -1,22 +1,22 @@
 import '@src/api/http/controllers';
 
+import config from '@config/main';
 import { ICommand, IQuery, ICommandHandler, ICommandBus, IQueryBus, IQueryHandler, IEventHandler } from '@cqrs-es/core';
+import { errorHandler } from '@src/api/http/middlewares/error-handler';
+import { TYPES } from '@src/types';
 import { Application, urlencoded, json } from 'express';
 import { Container } from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
 
-import config from '@config/main';
-import { errorHandler } from '@src/api/http/middlewares/error-handler';
-
-import { TYPES } from '@src/types';
-import { infrastructureModule } from './infrastructure/module';
+import { JobCreated } from '@domain/events/job-created';
+import { JobUpdated } from '@domain/events/job-updated';
 import { CreateJobCommandHandler } from '@src/application/commands/handlers/create-job-handler';
 import { UpdateJobCommandHandler } from '@src/application/commands/handlers/update-job-handler';
 import { JobCreatedEventHandler } from '@src/application/events/handlers/job-created-handler';
 import { JobUpdatedEventHandler } from '@src/application/events/handlers/job-updated-handler';
 import { GetAllJobsQueryHandler } from '@src/application/queries/handlers/get-all-jobs-query-handler';
-import { JobCreated } from '@domain/events/job-created';
-import { JobUpdated } from '@domain/events/job-updated';
+
+import { infrastructureModule } from './infrastructure/module';
 
 const initialise = async () => {
   const container = new Container();
@@ -30,12 +30,10 @@ const initialise = async () => {
   container.bind<IQueryHandler<IQuery>>(TYPES.QueryHandler).to(GetAllJobsQueryHandler);
 
   const commandBus = container.get<ICommandBus>(TYPES.CommandBus);
-  
-  container
-    .getAll<ICommandHandler<ICommand>>(TYPES.CommandHandler)
-    .forEach((handler: ICommandHandler<ICommand>) => {
-      commandBus.registerHandler(handler);
-    });
+
+  container.getAll<ICommandHandler<ICommand>>(TYPES.CommandHandler).forEach((handler: ICommandHandler<ICommand>) => {
+    commandBus.registerHandler(handler);
+  });
 
   const queryBus = container.get<IQueryBus>(TYPES.QueryBus);
   container.getAll<IQueryHandler<IQuery>>(TYPES.QueryHandler).forEach((handler: IQueryHandler<IQuery>) => {

@@ -1,7 +1,7 @@
-import { inject, injectable, named } from 'inversify';
-
-import { TYPES } from '@src/types';
 import { EventSourcedRepository, IEventStore } from '@cqrs-es/core';
+import { TYPES } from '@src/types';
+import { inject, injectable } from 'inversify';
+
 import { Job } from '@src/domain/job';
 import { IJobRepository } from '@src/domain/job-repository.interface';
 
