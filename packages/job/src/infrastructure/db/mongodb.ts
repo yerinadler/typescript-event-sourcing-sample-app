@@ -1,6 +1,5 @@
-import { MongoClientOptions, MongoClient, Db } from 'mongodb';
-
 import config from '@config/main';
+import { MongoClientOptions, MongoClient, Db } from 'mongodb';
 
 export const createMongodbConnection = async (
   host: string,

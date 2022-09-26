@@ -2,8 +2,8 @@ import { IEventHandler } from '@cqrs-es/core';
 import { inject, injectable } from 'inversify';
 import { Redis } from 'ioredis';
 
-import { TYPES } from '@src/types';
 import { ApplicationCreated } from '@src/domain/events/application-created';
+import { TYPES } from '@src/types';
 
 @injectable()
 export class ApplicationCreatedEventHandler implements IEventHandler<ApplicationCreated> {

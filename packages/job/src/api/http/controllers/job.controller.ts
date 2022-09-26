@@ -1,9 +1,9 @@
 import { ICommandBus, IQueryBus } from '@cqrs-es/core';
+import { TYPES } from '@src/types';
 import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, httpPut, request, response } from 'inversify-express-utils';
 
-import { TYPES } from '@src/types';
 import { CreateJobCommand } from '@src/application/commands/definitions/create-job';
 import { UpdateJobCommand } from '@src/application/commands/definitions/update-job';
 import { GetAllJobsQuery } from '@src/application/queries/definitions/get-all-jobs-query';

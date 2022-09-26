@@ -3,8 +3,8 @@ dotenv.config();
 
 import 'reflect-metadata';
 
-import { TYPES } from './types';
 import { initialise } from './startup';
+import { TYPES } from './types';
 
 // eslint-disable-next-line import/order
 import { IEventBus } from '@cqrs-es/core';

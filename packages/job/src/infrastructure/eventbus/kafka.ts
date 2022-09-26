@@ -1,9 +1,8 @@
 import { IEvent, IEventBus, IEventHandler } from '@cqrs-es/core';
+import { TYPES } from '@src/types';
 import { classToPlain } from 'class-transformer';
 import { inject, injectable, multiInject } from 'inversify';
 import { Consumer, Producer } from 'kafkajs';
-
-import { TYPES } from '@src/types';
 
 @injectable()
 export class KafkaEventBus implements IEventBus {

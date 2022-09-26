@@ -1,8 +1,8 @@
 import { ICommandHandler } from '@cqrs-es/core';
+import { TYPES } from '@src/types';
 import { inject, injectable } from 'inversify';
 
 import { IJobRepository } from '@src/domain/job-repository.interface';
-import { TYPES } from '@src/types';
 
 import { UpdateJobCommand } from '../definitions/update-job';
 

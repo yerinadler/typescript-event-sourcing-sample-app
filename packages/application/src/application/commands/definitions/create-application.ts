@@ -1,4 +1,4 @@
-import { Command } from "@cqrs-es/core";
+import { Command } from '@cqrs-es/core';
 
 export class CreateApplicationCommand extends Command {
   public jobId: string;

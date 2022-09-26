@@ -1,4 +1,4 @@
-import { IEvent } from "interfaces/IEvent";
+import { IEvent } from './interfaces/IEvent';
 
 export class EventDescriptor {
   constructor(

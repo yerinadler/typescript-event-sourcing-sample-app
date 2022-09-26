@@ -1,6 +1,6 @@
-import { IEvent } from 'interfaces/IEvent';
 import { nanoid } from 'nanoid';
 
+import { IEvent } from './interfaces/IEvent';
 
 export abstract class AggregateRoot {
   [x: string]: any;

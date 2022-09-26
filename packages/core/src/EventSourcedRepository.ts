@@ -1,7 +1,8 @@
-import { AggregateRoot } from './AggregateRoot';
 import { injectable, unmanaged } from 'inversify';
-import { IRepository } from './interfaces/IRepository';
+
+import { AggregateRoot } from './AggregateRoot';
 import { IEventStore } from './interfaces/IEventStore';
+import { IRepository } from './interfaces/IRepository';
 
 @injectable()
 export class EventSourcedRepository<T extends AggregateRoot> implements IRepository<T> {
