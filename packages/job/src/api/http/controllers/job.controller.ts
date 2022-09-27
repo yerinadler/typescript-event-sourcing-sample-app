@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, httpPut, request, response } from 'inversify-express-utils';
 
+import { ArchiveJobCommand } from '@src/application/commands/definitions/archive-job';
 import { CreateJobCommand } from '@src/application/commands/definitions/create-job';
 import { UpdateJobCommand } from '@src/application/commands/definitions/update-job';
 import { GetAllJobsQuery } from '@src/application/queries/definitions/get-all-jobs-query';
@@ -29,6 +30,13 @@ export class JobController {
     const { title, description, version } = req.body;
     await this._commandBus.send(new UpdateJobCommand(req.params.id, title, description, version));
     return res.json(ok('Updated the job successfully', undefined));
+  }
+
+  @httpPut('/:id/archive')
+  async archiveJob(@request() req: Request, @response() res: Response) {
+    const { version } = req.body;
+    await this._commandBus.send(new ArchiveJobCommand(req.params.id, version));
+    return res.json(ok('Archived job successfully', undefined));
   }
 
   @httpGet('')

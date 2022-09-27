@@ -1,4 +1,4 @@
-import { CONFLICT, NOT_FOUND } from 'http-status-codes';
+import { BAD_REQUEST, CONFLICT, NOT_FOUND } from 'http-status-codes';
 
 export class ApplicationError extends Error {
   public readonly httpCode: number;
@@ -19,5 +19,11 @@ export class NotFoundException extends ApplicationError {
 export class ConcurrencyException extends ApplicationError {
   constructor(public readonly message: string) {
     super(CONFLICT, '409', message || 'Concurrency detected');
+  }
+}
+
+export class DomainException extends ApplicationError {
+  constructor(public readonly message: string) {
+    super(BAD_REQUEST, '5310', message || 'Domain exception detected');
   }
 }

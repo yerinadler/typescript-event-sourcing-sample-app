@@ -1,5 +1,5 @@
 import { AggregateRoot, ApplicationError } from '@cqrs-es/core';
-import { INTERNAL_SERVER_ERROR } from 'http-status-codes';
+import { BAD_REQUEST } from 'http-status-codes';
 
 import { JobArchived } from './events/job-archived';
 import { JobCreated } from './events/job-created';
@@ -29,7 +29,7 @@ export class Job extends AggregateRoot {
 
   archive() {
     if (this.status === JobStatus.ARCHIVED) {
-      throw new ApplicationError(INTERNAL_SERVER_ERROR, '5310', 'Invalid status');
+      throw new ApplicationError(BAD_REQUEST, '5310', 'The job is already archived');
     }
     this.applyChange(new JobArchived(this.guid));
   }

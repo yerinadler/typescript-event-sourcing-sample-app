@@ -4,11 +4,10 @@ import { inject, injectable } from 'inversify';
 import { Redis } from 'ioredis';
 
 import { JobArchived } from '@src/domain/events/job-archived';
-import { JobUpdated } from '@src/domain/events/job-updated';
 
 @injectable()
-export class JobUpdatedEventHandler implements IEventHandler<JobUpdated> {
-  public event = JobUpdated.name;
+export class JobArchivedEventHandler implements IEventHandler<JobArchived> {
+  public event = JobArchived.name;
 
   constructor(@inject(TYPES.Redis) private readonly _redisClient: Redis) {}
 
