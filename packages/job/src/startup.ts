@@ -16,6 +16,9 @@ import { JobCreatedEventHandler } from '@src/application/events/handlers/job-cre
 import { JobUpdatedEventHandler } from '@src/application/events/handlers/job-updated-handler';
 import { GetAllJobsQueryHandler } from '@src/application/queries/handlers/get-all-jobs-query-handler';
 
+import { ArchiveJobCommandHandler } from './application/commands/handlers/archive-job-handler';
+import { JobArchivedEventHandler } from './application/events/handlers/job-archived-handler';
+import { JobArchived } from './domain/events/job-archived';
 import { infrastructureModule } from './infrastructure/module';
 
 const initialise = async () => {
@@ -25,8 +28,10 @@ const initialise = async () => {
 
   container.bind<IEventHandler<JobCreated>>(TYPES.Event).to(JobCreatedEventHandler);
   container.bind<IEventHandler<JobUpdated>>(TYPES.Event).to(JobUpdatedEventHandler);
+  container.bind<IEventHandler<JobArchived>>(TYPES.Event).to(JobArchivedEventHandler);
   container.bind<ICommandHandler<ICommand>>(TYPES.CommandHandler).to(CreateJobCommandHandler);
   container.bind<ICommandHandler<ICommand>>(TYPES.CommandHandler).to(UpdateJobCommandHandler);
+  container.bind<ICommandHandler<ICommand>>(TYPES.CommandHandler).to(ArchiveJobCommandHandler);
   container.bind<IQueryHandler<IQuery>>(TYPES.QueryHandler).to(GetAllJobsQueryHandler);
 
   const commandBus = container.get<ICommandBus>(TYPES.CommandBus);
