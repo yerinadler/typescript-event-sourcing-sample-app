@@ -32,7 +32,7 @@ export const infrastructureModule = new AsyncContainerModule(async (bind: interf
   bind<Db>(TYPES.Db).toConstantValue(db);
   bind<Producer>(TYPES.KafkaProducer).toConstantValue(kafkaProducer);
   bind<Consumer>(TYPES.KafkaConsumer).toConstantValue(kafkaConsumer);
-  bind<Redis>(TYPES.Redis).toConstantValue(new RedisClient());
+  bind<Redis>(TYPES.Redis).toConstantValue(new RedisClient(config.REDIS_URI));
   bind<IEventBus>(TYPES.EventBus).to(KafkaEventBus);
   bind<IJobEventStore>(TYPES.JobEventStore).to(JobEventStore).inSingletonScope();
   bind<IJobRepository>(TYPES.JobRepository).to(JobRepository).inSingletonScope();
