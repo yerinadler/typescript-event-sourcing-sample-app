@@ -14,6 +14,8 @@ import { GetAllApplicationsQueryHandler } from '@src/application/queries/handler
 import { TYPES } from '@src/types';
 
 import { infrastructureModule } from './infrastructure/module';
+import { JobCreated } from './application/events/definitions/job-created';
+import { JobCreatedEventHandler } from './application/events/handlers/job-created-handler';
 
 const initialise = async () => {
   const container = new Container();
@@ -21,6 +23,7 @@ const initialise = async () => {
   await container.loadAsync(infrastructureModule);
 
   container.bind<IEventHandler<ApplicationCreated>>(TYPES.Event).to(ApplicationCreatedEventHandler);
+  container.bind<IEventHandler<JobCreated>>(TYPES.Event).to(JobCreatedEventHandler);
   container.bind<ICommandHandler<ICommand>>(TYPES.CommandHandler).to(CreateApplicationCommandHandler);
   container.bind<IQueryHandler<IQuery>>(TYPES.QueryHandler).to(GetAllApplicationsQueryHandler);
 
