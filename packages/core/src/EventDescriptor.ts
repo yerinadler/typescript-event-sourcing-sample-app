@@ -1,4 +1,4 @@
-import { StorageEvent } from './EventStore';
+import { StorageEvent } from "./utilities/EventProcessor";
 
 export class EventDescriptor {
   constructor(

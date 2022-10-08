@@ -1,9 +1,8 @@
-import { IEvent, IEventBus, IEventHandler } from '@cqrs-es/core';
+import { EventDescriptor, IEvent, IEventBus, IEventHandler, rehydrateEventFromDescriptor } from '@cqrs-es/core';
+import { TYPES } from '@src/types';
 import { classToPlain } from 'class-transformer';
 import { inject, injectable, multiInject } from 'inversify';
 import { Consumer, Producer } from 'kafkajs';
-
-import { TYPES } from '@src/types';
 
 @injectable()
 export class KafkaEventBus implements IEventBus {
@@ -13,13 +12,13 @@ export class KafkaEventBus implements IEventBus {
     @inject(TYPES.KafkaProducer) private readonly _producer: Producer
   ) {}
 
-  async publish(channel: string, event: IEvent): Promise<void> {
-    const payload: string = JSON.stringify({ pattern: event.eventName, ...classToPlain(event) });
+  async publish(channel: string, eventDescriptor: EventDescriptor): Promise<void> {
+    const payload: string = JSON.stringify({ ...classToPlain(eventDescriptor) });
     await this._producer.send({
       topic: channel,
       messages: [
         {
-          key: event.aggregateId,
+          key: eventDescriptor.aggregateGuid,
           value: payload,
         },
       ],
@@ -30,13 +29,13 @@ export class KafkaEventBus implements IEventBus {
     await this._subscriber.run({
       eachMessage: async ({ message, heartbeat }) => {
         if (message.value) {
-          const event = JSON.parse(message.value.toString());
+          const eventDescriptor = JSON.parse(message.value.toString());
           const matchedHandlers: IEventHandler<IEvent>[] = this.eventHandlers.filter(
-            (handler) => handler.event === event.pattern
+            (handler) => handler.event === eventDescriptor.eventName
           );
           await Promise.all(
             matchedHandlers.map((handler: IEventHandler<IEvent>) => {
-              handler.handle(event);
+              handler.handle(rehydrateEventFromDescriptor(eventDescriptor));
             })
           );
           await heartbeat();
