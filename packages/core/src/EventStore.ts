@@ -1,5 +1,3 @@
-import { instanceToPlain, plainToInstance } from 'class-transformer';
-import { EVENT_METADATA, EVENT_METADATA_TYPES } from './Event';
 import { injectable, unmanaged } from 'inversify';
 import { Collection } from 'mongodb';
 
@@ -8,9 +6,7 @@ import { EventDescriptor } from './EventDescriptor';
 import { IEvent } from './interfaces/IEvent';
 import { IEventBus } from './interfaces/IEventBus';
 import { IEventStore } from './interfaces/IEventStore';
-
-export type StorageEvent = Omit<IEvent, EVENT_METADATA_TYPES>;
-export class RehydratedEvent {}
+import { createEventDescriptor, rehydrateEventFromDescriptor } from './utilities/EventProcessor';
 
 @injectable()
 export abstract class EventStore implements IEventStore {
@@ -33,8 +29,8 @@ export abstract class EventStore implements IEventStore {
     for (const event of events) {
       i++;
       event.version = i;
-      const eventDescriptor = this.createEventDescriptor(event);
-      this._eventBus.publish(event.aggregateName, event);
+      const eventDescriptor = createEventDescriptor(event);
+      this._eventBus.publish(event.aggregateName, eventDescriptor);
       operations.push({ insertOne: eventDescriptor });
     }
 
@@ -46,34 +42,11 @@ export abstract class EventStore implements IEventStore {
     if (!events.length) {
       throw new NotFoundException('Aggregate with the requested Guid does not exist');
     }
-    return events.map((eventDescriptor: EventDescriptor) => this.rehydrateEventFromStorage(eventDescriptor));
+    return events.map((eventDescriptor: EventDescriptor) => rehydrateEventFromDescriptor(eventDescriptor));
   }
 
   private async getLastEventDescriptor(aggregateGuid: string) {
     const [latestEvent] = await this.eventCollection.find({ aggregateGuid }, { sort: { _id: -1 } }).toArray();
     return latestEvent;
-  }
-
-  private createEventDescriptor<T extends IEvent = IEvent>(
-    event: T
-  ): EventDescriptor {
-    const JSONEvent = instanceToPlain(event);
-
-    for (const attribute of EVENT_METADATA) {
-      delete JSONEvent[attribute];
-    }
-
-    return new EventDescriptor(event.aggregateId, event.aggregateName, event.eventName, JSONEvent, event.version!);
-  }
-
-  private rehydrateEventFromStorage(storageEvent: EventDescriptor): IEvent {
-    const event: any = plainToInstance(RehydratedEvent, storageEvent);
-    return {
-      aggregateId: storageEvent.aggregateGuid,
-      aggregateName: storageEvent.aggregateName,
-      eventName: storageEvent.eventName,
-      version: storageEvent.version,
-      ...event.payload,
-    }
   }
 }
