@@ -10,4 +10,5 @@
     "outDir": "dist",
   },
   "include": ["src"],
+  "exclude": ["dist/**/*"]
 }
