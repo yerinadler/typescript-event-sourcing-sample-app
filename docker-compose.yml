@@ -57,6 +57,12 @@ services:
         echo -e 'Successfully created topics:'
         kafka-topics --bootstrap-server kafka:29092 --list
       "
+  cassandra:
+    image: cassandra:4
+    ports:
+      - 9042:9042
+    environment:
+      CASSANDRA_CLUSTER_NAME: cqrs_es_cluster
   job:
     build:
       context: .
@@ -99,6 +105,7 @@ services:
       - kafka
       - mongodb
       - redis
+
 networks:
   default:
     name: cqrs-es-net

@@ -15,9 +15,12 @@ import { JobEventStore } from './event-store/job-event-store';
 import { KafkaEventBus } from './eventbus/kafka';
 import { QueryBus } from './query-bus';
 import { JobRepository } from './repositories/job-repository';
+import { Client } from 'cassandra-driver';
+import { createCassandraClient } from './db/cassandra';
 
 export const infrastructureModule = new AsyncContainerModule(async (bind: interfaces.Bind) => {
   const db: Db = await createMongodbConnection(config.MONGODB_URI);
+  const cassandra: Client = createCassandraClient(config.CASSANDRA_HOSTS, config.CASSANDRA_DC, config.CASSANDRA_KEYSPACE)
 
   const kafka = new Kafka({ brokers: config.KAFKA_BROKER_LIST.split(',') });
   const kafkaProducer = kafka.producer();
