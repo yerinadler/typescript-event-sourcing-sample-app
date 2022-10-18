@@ -3,6 +3,7 @@ import '@src/api/http/controllers';
 import config from '@config/main';
 import { ICommand, IQuery, ICommandHandler, ICommandBus, IQueryBus, IQueryHandler, IEventHandler } from '@cqrs-es/core';
 import { errorHandler } from '@src/api/http/middlewares/error-handler';
+import { JobCreatedEventHandler } from '@src/application/events/handlers/job-created-handler';
 import { TYPES } from '@src/types';
 import { Application, urlencoded, json } from 'express';
 import { Container } from 'inversify';
@@ -12,7 +13,6 @@ import { JobCreated } from '@domain/events/job-created';
 import { JobUpdated } from '@domain/events/job-updated';
 import { CreateJobCommandHandler } from '@src/application/commands/handlers/create-job-handler';
 import { UpdateJobCommandHandler } from '@src/application/commands/handlers/update-job-handler';
-import { JobCreatedEventHandler } from '@src/application/events/handlers/job-created-handler';
 import { JobUpdatedEventHandler } from '@src/application/events/handlers/job-updated-handler';
 import { GetAllJobsQueryHandler } from '@src/application/queries/handlers/get-all-jobs-query-handler';
 

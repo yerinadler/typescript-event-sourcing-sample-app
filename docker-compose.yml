@@ -58,54 +58,12 @@ services:
         kafka-topics --bootstrap-server kafka:29092 --list
       "
   cassandra:
+    container_name: cqrs-es-cassandra
     image: cassandra:4
     ports:
       - 9042:9042
     environment:
       CASSANDRA_CLUSTER_NAME: cqrs_es_cluster
-  job:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        BUILD_CONTEXT: job
-    ports:
-      - 3000:3000
-    environment:
-      NODE_ENV: dev
-      API_PORT: 3000
-      MONGODB_URI: mongodb://mongodb:27017
-      DB_NAME: job-dev
-      REDIS_URI: redis://redis:6379
-      KAFKA_BROKER_LIST: kafka:29092
-      KAFKA_CONSUMER_GROUP_ID: cqrs-es-job.dev
-      KAFKA_TOPICS_TO_SUBSCRIBE: job
-    depends_on:
-      - kafka
-      - mongodb
-      - redis
-  application:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        BUILD_CONTEXT: application
-    ports:
-      - 4000:3000
-    environment:
-      NODE_ENV: dev
-      API_PORT: 3000
-      MONGODB_URI: mongodb://mongodb:27017
-      DB_NAME: application-dev
-      REDIS_URI: redis://redis:6379
-      KAFKA_BROKER_LIST: kafka:29092
-      KAFKA_CONSUMER_GROUP_ID: cqrs-es-application.dev
-      KAFKA_TOPICS_TO_SUBSCRIBE: application,job
-    depends_on:
-      - kafka
-      - mongodb
-      - redis
-
 networks:
   default:
     name: cqrs-es-net
