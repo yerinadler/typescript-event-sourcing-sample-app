@@ -1,5 +1,6 @@
 export const TYPES = {
   Db: Symbol('Db'),
+  CassandraDb: Symbol('CassandraDb'),
   KafkaProducer: Symbol('KafkaProducer'),
   KafkaConsumer: Symbol('KafkaConsumer'),
   RedisSubscriber: Symbol('RedisSubscriber'),
