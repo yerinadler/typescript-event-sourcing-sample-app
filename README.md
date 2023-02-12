@@ -82,12 +82,17 @@ Below is the list of components in this project
 
 To run the project, make sure you have these dependencies installed on your system
 
+> The `docker-compose.yml` containing all dependencies for running the project is provided.
+> but make sure you have at least 8GB of RAM available on your local machine before runnign
+> these dependencies.
+
 1. Node.js v8 or later
 2. Typescript with `tsc` command
 3. Nodemon
 4. ts-node
 5. MongoDB
 6. Redis Server and Clients (redis-cli)
+7. Docker installed on the machine
 
 You also need to setup and initialise MongoDB database. Then, copy the `.env_example` file into `.env` file by firing the command
 
