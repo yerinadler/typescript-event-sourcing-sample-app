@@ -82,9 +82,8 @@ Below is the list of components in this project
 
 To run the project, make sure you have these dependencies installed on your system
 
-> The `docker-compose.yml` containing all dependencies for running the project is provided.
-> but make sure you have at least 8GB of RAM available on your local machine before runnign
-> these dependencies.
+> The `docker-compose.yml` containing all dependencies for running the project is provided
+> but make sure you have at least 8GB of RAM available on your local machine before running these dependencies
 
 1. Node.js v8 or later
 2. Typescript with `tsc` command
