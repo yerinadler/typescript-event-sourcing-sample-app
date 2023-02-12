@@ -27,7 +27,7 @@ This project uses DDD with Onion Architecture as illustrated in below images
 
 Below image illustrates the more detailed architecture
 
-![](materials/architecture.png)
+![](assets/architecture.png)
 
 In CQRS & Event Sourcing systems, the main idea is to implement different data models for read and write sides of the application.
 
@@ -41,7 +41,9 @@ The commands are sent by the frontend to the `commandBus` which then selects app
 
 To read more about CQRS and Event Sourcing. Please check [this link](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
 
+In order to demonstrate the use case with inter-service communication. Two seprate microservices for job and application is created. So a job microservice manages job (create, update, archive) and application microservice manages the user application.
 
+The pattern in `Event-Driven Architecture` called `Event-Carried State Transfer` is used between job and application microservices. When the job is created, the `JobCreated` event is embedded with the job information as a payload so the application microservice uses this information to replicate the job information for local query. Thus, whenever the application microservice needs the job information, it does not make a direct RPC / REST call to the job microservice at all.
 
 ### Technologies
 
