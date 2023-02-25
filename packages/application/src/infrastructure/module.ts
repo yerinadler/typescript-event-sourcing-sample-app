@@ -22,12 +22,12 @@ export const infrastructureModule = new AsyncContainerModule(async (bind: interf
   const kafka = new Kafka({ brokers: config.KAFKA_BROKER_LIST.split(',') });
   const kafkaProducer = kafka.producer();
   const kafkaConsumer = kafka.consumer({ groupId: config.KAFKA_CONSUMER_GROUP_ID });
-  await kafkaProducer.connect();
-  await kafkaConsumer.connect();
+  // await kafkaProducer.connect();
+  // await kafkaConsumer.connect();
 
-  for (const topic of config.KAFKA_TOPICS_TO_SUBSCRIBE.split(',')) {
-    await kafkaConsumer.subscribe({ topic });
-  }
+  // for (const topic of config.KAFKA_TOPICS_TO_SUBSCRIBE.split(',')) {
+  //   await kafkaConsumer.subscribe({ topic });
+  // }
 
   bind<Db>(TYPES.Db).toConstantValue(db);
   bind<Producer>(TYPES.KafkaProducer).toConstantValue(kafkaProducer);
