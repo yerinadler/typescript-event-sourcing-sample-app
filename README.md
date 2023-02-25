@@ -52,8 +52,9 @@ The pattern in `Event-Driven Architecture` called `Event-Carried State Transfer`
 3. MongoDB with MongoDB native driver as an event store (mongodb package on NPM)
 4. InversifyJS as an IoC container
 5. Express (via Inversify Express Utils) as an API framework
-6. Redis as a read store
-7. Apache Kafka as a message broker / event bus
+6. Redis as a read store for application microservice
+7. Apache Cassandra as a read store for job microservice
+8. Apache Kafka as a message broker / event bus
 
 ## Components
 
@@ -91,7 +92,8 @@ To run the project, make sure you have these dependencies installed on your syst
 4. ts-node
 5. MongoDB
 6. Redis Server and Clients (redis-cli)
-7. Docker installed on the machine
+7. CQLSH for interacting with Cassandra
+8. Docker installed on the machine
 
 You also need to setup and initialise MongoDB database. Then, copy the `.env_example` file into `.env` file by firing the command
 

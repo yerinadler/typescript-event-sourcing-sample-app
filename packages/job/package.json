@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --build --force",
-    "start": "TS_NODE_BASEURL=dist node -r tsconfig-paths/register dist/index.js",
+    "start": "TS_NODE_BASEURL=dist node -r tsconfig-paths/register dist/api/index.js",
+    "start:subscriber": "TS_NODE_BASEURL=dist node -r tsconfig-paths/register dist/subscribers/index.js",
     "dev": "nodemon",
     "lint": "eslint --fix ."
   },
