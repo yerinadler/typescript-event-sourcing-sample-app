@@ -16,4 +16,5 @@ export const TYPES = {
   JobRepository: Symbol('JobRepository'),
   JobEventStore: Symbol('JobEventStore'),
   GetAllJobsQueryHandler: Symbol('GetAllJobsQueryHandler'),
+  ApiServer: Symbol('ApiServer'),
 };

@@ -15,4 +15,5 @@ export const TYPES = {
   ApplicationRepository: Symbol('ApplicationRepository'),
   ApplicationEventStore: Symbol('ApplicationEventStore'),
   GetAllApplicationsQueryHandler: Symbol('GetAllApplicationsQueryHandler'),
+  ApiServer: Symbol('ApiServer'),
 };
