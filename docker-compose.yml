@@ -64,6 +64,13 @@ services:
       - 9042:9042
     environment:
       CASSANDRA_CLUSTER_NAME: cqrs_es_cluster
+  init-cassandra:
+    image: cassandra:4
+    depends_on:
+      - cassandra
+    entrypoint: ["/setup.sh"]
+    volumes:
+      - ./setup/cassandra.sh:/setup.sh
   job:
     build:
       context: .
