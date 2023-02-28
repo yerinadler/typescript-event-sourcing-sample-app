@@ -19,3 +19,4 @@ export * from './interfaces/IQueryHandler';
 export * from './interfaces/IReadModelFacade';
 export * from './interfaces/IRepository';
 export * from './utilities/EventProcessor';
+export * from './utilities/Logger';
