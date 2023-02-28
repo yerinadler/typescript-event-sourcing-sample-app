@@ -16,4 +16,5 @@ export const TYPES = {
   ApplicationEventStore: Symbol('ApplicationEventStore'),
   GetAllApplicationsQueryHandler: Symbol('GetAllApplicationsQueryHandler'),
   ApiServer: Symbol('ApiServer'),
+  Logger: Symbol('Logger'),
 };

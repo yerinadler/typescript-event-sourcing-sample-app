@@ -1,7 +1,6 @@
 import '@src/api/http/controllers';
 
-import config from '@config/main';
-import { ICommand, IQuery, ICommandHandler, ICommandBus, IQueryBus, IQueryHandler, IEventHandler } from '@cqrs-es/core';
+import { ICommand, IQuery, ICommandHandler, ICommandBus, IQueryBus, IQueryHandler, IEventHandler, createWinstonLogger } from '@cqrs-es/core';
 import { errorHandler } from '@src/api/http/middlewares/error-handler';
 import { JobCreatedEventHandler } from '@src/application/events/handlers/job-created-handler';
 import { TYPES } from '@src/types';
@@ -20,12 +19,15 @@ import { ArchiveJobCommandHandler } from './application/commands/handlers/archiv
 import { JobArchivedEventHandler } from './application/events/handlers/job-archived-handler';
 import { JobArchived } from './domain/events/job-archived';
 import { infrastructureModule } from './infrastructure/module';
+import winston from 'winston';
 
 const initialise = async () => {
   const container = new Container();
+  const logger = createWinstonLogger();
 
   await container.loadAsync(infrastructureModule);
 
+  container.bind<winston.Logger>(TYPES.Logger).toConstantValue(logger);
   container.bind<IEventHandler<JobCreated>>(TYPES.Event).to(JobCreatedEventHandler);
   container.bind<IEventHandler<JobUpdated>>(TYPES.Event).to(JobUpdatedEventHandler);
   container.bind<IEventHandler<JobArchived>>(TYPES.Event).to(JobArchivedEventHandler);
