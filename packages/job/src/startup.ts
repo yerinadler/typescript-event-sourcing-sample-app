@@ -23,7 +23,7 @@ import winston from 'winston';
 
 const initialise = async () => {
   const container = new Container();
-  const logger = createWinstonLogger();
+  const logger = createWinstonLogger('cqrs-es-job');
 
   await container.loadAsync(infrastructureModule);
 
