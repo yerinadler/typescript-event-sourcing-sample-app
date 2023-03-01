@@ -4,12 +4,16 @@ import { Redis } from 'ioredis';
 
 import { ApplicationCreated } from '@src/domain/events/application-created';
 import { TYPES } from '@src/types';
+import { Logger } from 'winston';
 
 @injectable()
 export class ApplicationCreatedEventHandler implements IEventHandler<ApplicationCreated> {
   public event = ApplicationCreated.name;
 
-  constructor(@inject(TYPES.Redis) private readonly _redisClient: Redis) {}
+  constructor(
+    @inject(TYPES.Redis) private readonly _redisClient: Redis,
+    @inject(TYPES.Logger) private readonly _logger: Logger,
+  ) {}
 
   async handle(event: ApplicationCreated) {
     const job = await this._redisClient.get(`job-repl:${event.jobId}`);
@@ -32,5 +36,7 @@ export class ApplicationCreatedEventHandler implements IEventHandler<Application
         version: event.version,
       })
     );
+
+    this._logger.info(`created read model for the application ${JSON.stringify(event)}`)
   }
 }

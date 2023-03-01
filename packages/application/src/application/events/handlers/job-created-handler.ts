@@ -15,11 +15,11 @@ export class JobCreatedEventHandler implements IEventHandler<JobCreated> {
   ) {}
 
   async handle(event: JobCreated) {
-    this._logger.info(`replicating job for application => ${JSON.stringify(event)}`);
     await this._redisClient.set(`job-repl:${event.guid}`, JSON.stringify({
       guid: event.guid,
       title: event.title,
       version: event.version
     }));
+    this._logger.info(`replicated job for the application => ${JSON.stringify(event)}`);
   }
 }

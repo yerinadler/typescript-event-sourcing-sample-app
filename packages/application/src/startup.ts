@@ -23,7 +23,7 @@ const initialise = async () => {
 
   await container.loadAsync(infrastructureModule);
 
-  const logger = createWinstonLogger();
+  const logger = createWinstonLogger('cqrs-es-application');
 
   container.bind<winston.Logger>(TYPES.Logger).toConstantValue(logger);
 

@@ -16,7 +16,6 @@ export class JobCreatedEventHandler implements IEventHandler<JobCreated> {
   ) {}
 
   async handle(event: JobCreated) {
-    this._logger.info(`[EVENT HANDLER] JobCreated event handled = ${JSON.stringify(event)}`);
     const query = 'INSERT INTO jobs (guid, title, description, status, version) VALUES (?, ?, ?, ?, ?)';
     
     await this._cassandraClient.execute(
@@ -24,5 +23,7 @@ export class JobCreatedEventHandler implements IEventHandler<JobCreated> {
       [event.guid, event.title, event.description, event.status, event.version],
       { prepare: true }
     );
+
+    this._logger.info(`created read model for job ${JSON.stringify(event)}`);
   }
 }
