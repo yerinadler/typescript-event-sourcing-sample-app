@@ -1,7 +1,7 @@
 import { IEventHandler } from '@cqrs-es/core';
 import { TYPES } from '@src/types';
+import { Client } from 'cassandra-driver';
 import { inject, injectable } from 'inversify';
-import { Redis } from 'ioredis';
 
 import { JobUpdated } from '@src/domain/events/job-updated';
 
@@ -9,18 +9,15 @@ import { JobUpdated } from '@src/domain/events/job-updated';
 export class JobUpdatedEventHandler implements IEventHandler<JobUpdated> {
   public event = JobUpdated.name;
 
-  constructor(@inject(TYPES.Redis) private readonly _redisClient: Redis) {}
+  constructor(@inject(TYPES.CassandraDb) private readonly _cassandraClient: Client) {}
 
   async handle(event: JobUpdated) {
-    await this._redisClient.set(
-      `jobs:${event.guid}`,
-      JSON.stringify({
-        guid: event.guid,
-        title: event.title,
-        description: event.description,
-        status: event.status,
-        version: event.version,
-      })
+    const query = 'UPDATE jobs SET title = ?, description = ?, status = ?, version = ? WHERE guid = ?';
+
+    await this._cassandraClient.execute(
+      query,
+      [event.title, event.description, event.status, event.version, event.guid],
+      { prepare: true }
     );
   }
 }

@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --build --force",
-    "start": "TS_NODE_BASEURL=dist node -r tsconfig-paths/register dist/index.js",
+    "start": "TS_NODE_BASEURL=dist node -r tsconfig-paths/register dist/api/index.js",
+    "start:subscriber": "TS_NODE_BASEURL=dist node -r tsconfig-paths/register dist/subscribers/index.js",
     "dev": "nodemon",
     "lint": "eslint --fix ."
   },
@@ -26,6 +27,7 @@
     "@types/ioredis": "^4.17.8",
     "@types/mongodb": "^3.5.25",
     "@types/uuid": "^8.0.0",
+    "cassandra-driver": "^4.6.4",
     "class-transformer": "^0.4.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -42,9 +44,11 @@
     "winston": "^3.7.2"
   },
   "devDependencies": {
+    "@types/cassandra-driver": "^4.2.0",
     "@types/node": "^16.10.3",
     "@typescript-eslint/eslint-plugin": "^3.5.0",
     "@typescript-eslint/parser": "^3.5.0",
+    "concurrently": "^7.6.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^2.5.0",

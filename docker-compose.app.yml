@@ -1,0 +1,89 @@
+services:
+  job:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONTEXT: job
+    ports:
+      - 3000:3000
+    environment:
+      NODE_ENV: dev
+      API_PORT: 3000
+      MONGODB_URI: mongodb://mongodb:27017
+      DB_NAME: job-dev
+      REDIS_URI: redis://redis:6379
+      KAFKA_BROKER_LIST: kafka:29092
+      KAFKA_CONSUMER_GROUP_ID: cqrs-es-job.dev
+      KAFKA_TOPICS_TO_SUBSCRIBE: job
+      CASSANDRA_HOSTS: cassandra:9042
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_KEYSPACE: cqrs_es_dev
+    depends_on:
+      - kafka
+      - mongodb
+      - redis
+      - cassandra
+  job-subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONTEXT: job
+    environment:
+      NODE_ENV: dev
+      MONGODB_URI: mongodb://mongodb:27017
+      DB_NAME: job-dev
+      REDIS_URI: redis://redis:6379
+      KAFKA_BROKER_LIST: kafka:29092
+      KAFKA_CONSUMER_GROUP_ID: cqrs-es-job.dev
+      KAFKA_TOPICS_TO_SUBSCRIBE: job
+      CASSANDRA_HOSTS: cassandra:9042
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_KEYSPACE: cqrs_es_dev
+    depends_on:
+      - kafka
+      - mongodb
+      - redis
+      - cassandra
+    command: yarn job start:subscriber
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONTEXT: application
+    ports:
+      - 4000:3000
+    environment:
+      NODE_ENV: dev
+      API_PORT: 3000
+      MONGODB_URI: mongodb://mongodb:27017
+      DB_NAME: application-dev
+      REDIS_URI: redis://redis:6379
+      KAFKA_BROKER_LIST: kafka:29092
+      KAFKA_CONSUMER_GROUP_ID: cqrs-es-application.dev
+      KAFKA_TOPICS_TO_SUBSCRIBE: application,job
+    depends_on:
+      - kafka
+      - mongodb
+      - redis
+  application-subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONTEXT: application
+    environment:
+      NODE_ENV: dev
+      MONGODB_URI: mongodb://mongodb:27017
+      DB_NAME: application-dev
+      REDIS_URI: redis://redis:6379
+      KAFKA_BROKER_LIST: kafka:29092
+      KAFKA_CONSUMER_GROUP_ID: cqrs-es-application.dev
+      KAFKA_TOPICS_TO_SUBSCRIBE: application,job
+    depends_on:
+      - kafka
+      - mongodb
+      - redis
+    command: yarn application start:subscriber

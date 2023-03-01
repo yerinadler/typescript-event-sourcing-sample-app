@@ -45,60 +45,23 @@ services:
     image: confluentinc/cp-kafka:7.2.0
     depends_on:
       - kafka
-    entrypoint: ['/bin/sh', '-c']
-    command: |
-      "
-        kafka-topics --bootstrap-server kafka:29092 --list
-        
-        echo -e 'Creating topics ...'
-        kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic job --replication-factor 1 --partitions 1
-        kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic application --replication-factor 1 --partitions 1
-        
-        echo -e 'Successfully created topics:'
-        kafka-topics --bootstrap-server kafka:29092 --list
-      "
-  job:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        BUILD_CONTEXT: job
+    entrypoint: ["/setup.sh"]
+    volumes:
+      - ./setup/kafka.sh:/setup.sh
+  cassandra:
+    container_name: cqrs-es-cassandra
+    image: cassandra:4
     ports:
-      - 3000:3000
+      - 9042:9042
     environment:
-      NODE_ENV: dev
-      API_PORT: 3000
-      MONGODB_URI: mongodb://mongodb:27017
-      DB_NAME: job-dev
-      REDIS_URI: redis://redis:6379
-      KAFKA_BROKER_LIST: kafka:29092
-      KAFKA_CONSUMER_GROUP_ID: cqrs-es-job.dev
-      KAFKA_TOPICS_TO_SUBSCRIBE: job
+      CASSANDRA_CLUSTER_NAME: cqrs_es_cluster
+  init-cassandra:
+    image: cassandra:4
     depends_on:
-      - kafka
-      - mongodb
-      - redis
-  application:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        BUILD_CONTEXT: application
-    ports:
-      - 4000:3000
-    environment:
-      NODE_ENV: dev
-      API_PORT: 3000
-      MONGODB_URI: mongodb://mongodb:27017
-      DB_NAME: application-dev
-      REDIS_URI: redis://redis:6379
-      KAFKA_BROKER_LIST: kafka:29092
-      KAFKA_CONSUMER_GROUP_ID: cqrs-es-application.dev
-      KAFKA_TOPICS_TO_SUBSCRIBE: application,job
-    depends_on:
-      - kafka
-      - mongodb
-      - redis
+      - cassandra
+    entrypoint: ["/setup.sh"]
+    volumes:
+      - ./setup/cassandra.sh:/setup.sh
 networks:
   default:
     name: cqrs-es-net

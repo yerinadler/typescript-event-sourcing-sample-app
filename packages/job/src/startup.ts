@@ -1,8 +1,8 @@
 import '@src/api/http/controllers';
 
-import config from '@config/main';
-import { ICommand, IQuery, ICommandHandler, ICommandBus, IQueryBus, IQueryHandler, IEventHandler } from '@cqrs-es/core';
+import { ICommand, IQuery, ICommandHandler, ICommandBus, IQueryBus, IQueryHandler, IEventHandler, createWinstonLogger } from '@cqrs-es/core';
 import { errorHandler } from '@src/api/http/middlewares/error-handler';
+import { JobCreatedEventHandler } from '@src/application/events/handlers/job-created-handler';
 import { TYPES } from '@src/types';
 import { Application, urlencoded, json } from 'express';
 import { Container } from 'inversify';
@@ -12,7 +12,6 @@ import { JobCreated } from '@domain/events/job-created';
 import { JobUpdated } from '@domain/events/job-updated';
 import { CreateJobCommandHandler } from '@src/application/commands/handlers/create-job-handler';
 import { UpdateJobCommandHandler } from '@src/application/commands/handlers/update-job-handler';
-import { JobCreatedEventHandler } from '@src/application/events/handlers/job-created-handler';
 import { JobUpdatedEventHandler } from '@src/application/events/handlers/job-updated-handler';
 import { GetAllJobsQueryHandler } from '@src/application/queries/handlers/get-all-jobs-query-handler';
 
@@ -20,12 +19,15 @@ import { ArchiveJobCommandHandler } from './application/commands/handlers/archiv
 import { JobArchivedEventHandler } from './application/events/handlers/job-archived-handler';
 import { JobArchived } from './domain/events/job-archived';
 import { infrastructureModule } from './infrastructure/module';
+import winston from 'winston';
 
 const initialise = async () => {
   const container = new Container();
+  const logger = createWinstonLogger('cqrs-es-job');
 
   await container.loadAsync(infrastructureModule);
 
+  container.bind<winston.Logger>(TYPES.Logger).toConstantValue(logger);
   container.bind<IEventHandler<JobCreated>>(TYPES.Event).to(JobCreatedEventHandler);
   container.bind<IEventHandler<JobUpdated>>(TYPES.Event).to(JobUpdatedEventHandler);
   container.bind<IEventHandler<JobArchived>>(TYPES.Event).to(JobArchivedEventHandler);
@@ -57,9 +59,7 @@ const initialise = async () => {
   });
 
   const apiServer = server.build();
-  apiServer.listen(config.API_PORT, () =>
-    console.log('The application is initialised on the port %s', config.API_PORT)
-  );
+  container.bind<Application>(TYPES.ApiServer).toConstantValue(apiServer);
 
   return container;
 };
