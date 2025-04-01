@@ -27,7 +27,7 @@ export class GetAllJobsQueryHandler implements IQueryHandler<GetAllJobsQuery, Jo
     const query = 'SELECT guid, title, description, status, version FROM jobs';
     const queryResult = await this._cassandraClient.execute(query);
     const resp: JobQueryResponseModel[] = queryResult.rows.map((row) => ({
-      id: row['id'] as string,
+      id: row['guid'] as string,
       title: row['title'] as string,
       description: row['description'] as string,
       status: row['status'] as JobStatus,

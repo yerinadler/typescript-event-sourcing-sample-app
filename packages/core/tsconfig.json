@@ -5,10 +5,10 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "rootDir": "src",
-    "baseUrl": "src",
-    "outDir": "dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "outDir": "./dist",
   },
-  "include": ["src"],
-  "exclude": ["dist/**/*"]
+  "include": ["./src"],
+  "exclude": ["./dist/**/*"]
 }

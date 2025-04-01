@@ -2,40 +2,40 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "composite": true,
-    "rootDir": "src",
-    "baseUrl": "src",
-    "outDir": "dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "outDir": "./dist",
     "paths": {
       "@src/*": [
-        "*"
+        "./*"
       ],
       "@common/*": [
-        "common/*"
+        "./common/*"
       ],
       "@commands/*": [
-        "commands/*"
+        "./commands/*"
       ],
       "@config/*": [
-        "config/*"
+        "./config/*"
       ],
       "@constants/*": [
-        "constants/*"
+        "./constants/*"
       ],
       "@domain/*": [
-        "domain/*"
+        "./domain/*"
       ],
       "@infrastructure/*": [
-        "infrastructure/*"
+        "./infrastructure/*"
       ],
       "@api/*": [
-        "api/*"
+        "./api/*"
       ]
     },
     "types": [
       "reflect-metadata"
     ],
   },
-  "include": ["src"],
+  "include": ["./src"],
   "exclude": [
     "node_modules"
   ],

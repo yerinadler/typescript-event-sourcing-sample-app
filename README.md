@@ -52,8 +52,8 @@ The pattern in `Event-Driven Architecture` called `Event-Carried State Transfer`
 3. MongoDB with MongoDB native driver as an event store (mongodb package on NPM)
 4. InversifyJS as an IoC container
 5. Express (via Inversify Express Utils) as an API framework
-6. Redis as a read store for application microservice
-7. Apache Cassandra as a read store for job microservice
+6. Redis as a Read store for "Application" microservice
+7. Apache Cassandra as a Read store for "Job" microservice
 8. Apache Kafka as a message broker / event bus
 
 ## Components
@@ -81,28 +81,53 @@ Below is the list of components in this project
 
 ## Getting Started
 
-To run the project, make sure you have these dependencies installed on your system
+### Prerequisites
 
-> The `docker-compose.yml` containing all dependencies for running the project is provided
-> but make sure you have at least 8GB of RAM available on your local machine before running these dependencies
+1. Node.js v20 or later & Yarn 1.22 or later
+2. Docker v27 (earlier or later should work)
 
-1. Node.js v8 or later
-2. Typescript with `tsc` command
-3. Nodemon
-4. ts-node
-5. MongoDB
-6. Redis Server and Clients (redis-cli)
-7. CQLSH for interacting with Cassandra
-8. Docker installed on the machine
+### Configuration
 
-You also need to setup and initialise MongoDB database. Then, copy the `.env_example` file into `.env` file by firing the command
-
+1. Copy the `.env_example` file into `.env` file by firing the command
 ```bash
 cp .env_template .env
 ```
+2. And Update the `.env` file with your Server Variables as needed (Defaults should work with Docker)
 
-Do adjust the `DB_NAME` and `MONGODB_URI` to match your configuration then run
+### Run Services
 
+1. Run Both the Data Layer and the API Layer in One go: 
 ```bash
-yarn dev
+ docker-compose -f docker-compose.yml -f docker-compose.app.yml up -d
+ ```
+ 2. Alternatively: Only Run the Data Layer (docker-compose.yml)
+ ```bash
+ docker-compose up -d
+ ```
+
+### Run/Debug Specific API Layer Services
+
+1. Using this Yarn command, the `application` workspace will be triggered with the `dev` package script
+```bash
+yarn application dev
 ```
+2. Using this Yarn command, the `job` workspace will be triggered with the `dev` package script
+```bash
+yarn job dev
+```
+
+### Other Commands
+These commands are also available:
+```bash
+yarn application build
+yarn application start 
+yarn application dev 
+yarn application lint
+```
+
+### Testing the API
+1. Postman: `TS-EventSource-Sample.postman_collection` (import this collection for testing all API endpoints)
+
+ ## Troubleshooting
+- Cassandra/Kafka not initialising: Ensure Git Checkout uses UNIX style Line-Endings due to the Unix bash scripts required to setup those services (see `./setup`)
+- Typescript Environment: Ensure your editor (VSCode) is using the Project Typescript (defined in package) and not your Global Typescript (ie: `.vscode/settings.json` file should have something similar to this: `"typescript.tsdk": "node_modules\\typescript\\lib"`)
